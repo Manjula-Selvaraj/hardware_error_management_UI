@@ -23,7 +23,7 @@ const InboxPage = () => {
       const timer = setTimeout(() => {
         setShowMessage(false); // Hide the message after 3 seconds
       }, 3000);
-
+      
       return () => clearTimeout(timer); // Cleanup the timer on unmount or state change
     }
   }, [selectedTask, showMessage]); // Watch for changes in both selectedTask and showMessage
@@ -109,26 +109,61 @@ const InboxPage = () => {
       {selectedTask && (
         <>
           <button
-            className='floating-action-btn'
             onClick={() => setShowMessage(true)} // Set message to true on button click
+            style={{
+              position: "fixed",
+              bottom: "20px",
+              right: "20px",
+              backgroundColor: "#cce5ff",
+              color: "#004085",
+              border: "none",
+              borderRadius: "5%",
+              width: "60px",
+              height: "60px",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+              fontSize: "22px",
+              cursor: "pointer",
+              zIndex: 1000
+            }}
             title="Complete Task"
           >
             Complete
           </button>
 
-          <div className={`fade-message-box ${showMessage ? 'visible' : 'hidden'}`}>
-            <div style={{ display: "flex", alignItems: "center" }}>
-              <span>Submit your action and complete the task!</span>
-              <button onClick={() => setShowMessage(false)} className="close-button">
-                ❌
-              </button>
-            </div>
-
-            <button className="completeBtn" onClick={(e)=>{alert("Submit button is clicked")}}>
-              <strong> Submit  <span>📤</span> </strong>
+          <div
+            className={`fade-message-box ${showMessage ? 'visible' : 'hidden'}`}
+            style={{
+              position: "fixed",
+              bottom: "100px",
+              right: "20px",
+              backgroundColor: "#d4edda",
+              border: "1px solid #c3e6cb",
+              color: "#155724",
+              padding: "10px 15px",
+              borderRadius: "8px",
+              boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+              display: "flex",
+              alignItems: "center",
+              transition: "opacity 0.4s ease",
+              zIndex: 999
+            }}
+          >
+            <span style={{ fontSize: "1.2rem", marginRight: 10 }}>📤</span>
+            Task loaded successfully
+            <button
+              onClick={() => setShowMessage(false)}
+              style={{
+                marginLeft: "10px",
+                border: "none",
+                backgroundColor: "transparent",
+                color: "#155724",
+                fontSize: "1.2rem",
+                cursor: "pointer",
+              }}
+            >
+              ❌
             </button>
           </div>
-
         </>
       )}
 

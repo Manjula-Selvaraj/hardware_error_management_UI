@@ -111,6 +111,21 @@ const InboxPage = () => {
           <button
             className='floating-action-btn'
             onClick={() => setShowMessage(true)} // Set message to true on button click
+            // style={{
+            //   position: "fixed",
+            //   bottom: "20px",
+            //   right: "20px",
+            //   backgroundColor: "#cce5ff",
+            //   color: "#004085",
+            //   border: "none",
+            //   borderRadius: "5%",
+            //   width: "120px",
+            //   height: "40px",
+            //   boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+            //   fontSize: "22px",
+            //   cursor: "pointer",
+            //   zIndex: 1000
+            // }}
             title="Complete Task"
           >
             Complete

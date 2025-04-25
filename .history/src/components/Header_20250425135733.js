@@ -11,7 +11,7 @@ const Header = ({ username = 'User', onLogout }) => {
       style={{color: 'rgb(68, 84, 111)' }}
     >
       <div className="fw-bold fs-5" style={{ color: 'rgb(68, 84, 111)' }}>
-      <img src={logo} alt="Logo" style={{ height: '45px' }} />
+      <img src={logo} alt="Logo" style={{ height: '30px' }} />
       </div>
 
       <Dropdown align="end">

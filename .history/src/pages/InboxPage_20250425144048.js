@@ -109,8 +109,22 @@ const InboxPage = () => {
       {selectedTask && (
         <>
           <button
-            className='floating-action-btn'
             onClick={() => setShowMessage(true)} // Set message to true on button click
+            style={{
+              position: "fixed",
+              bottom: "20px",
+              right: "20px",
+              backgroundColor: "#cce5ff",
+              color: "#004085",
+              border: "none",
+              borderRadius: "5%",
+              width: "60px",
+              height: "60px",
+              boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+              fontSize: "22px",
+              cursor: "pointer",
+              zIndex: 1000
+            }}
             title="Complete Task"
           >
             Complete
@@ -118,14 +132,15 @@ const InboxPage = () => {
 
           <div className={`fade-message-box ${showMessage ? 'visible' : 'hidden'}`}>
             <div style={{ display: "flex", alignItems: "center" }}>
+              <span>📤</span>
               <span>Submit your action and complete the task!</span>
               <button onClick={() => setShowMessage(false)} className="close-button">
                 ❌
               </button>
             </div>
 
-            <button className="completeBtn" onClick={(e)=>{alert("Submit button is clicked")}}>
-              <strong> Submit  <span>📤</span> </strong>
+            <button className="outline">
+              <strong> Complete </strong>
             </button>
           </div>
 
