@@ -19,7 +19,7 @@ const TaskDetails = (props) => {
         console.log(props,props.setSelectedTask, selectedTask.tabs)
     }, [props,selectedTask]);
 
-    const [activeTab, setactiveTab] = React.useState('Grafana');
+    const [activeTab, setactiveTab] = React.useState('');
 
    
 
