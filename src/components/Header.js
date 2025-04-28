@@ -2,6 +2,8 @@
 import React from 'react';
 import { Dropdown } from 'react-bootstrap';
 import { FaUserCircle } from 'react-icons/fa';
+import logo from '../assests/images/logo.png';
+
 const Header = ({ username = 'User', onLogout }) => {
   return (
     <div
@@ -9,7 +11,7 @@ const Header = ({ username = 'User', onLogout }) => {
       style={{color: 'rgb(68, 84, 111)' }}
     >
       <div className="fw-bold fs-5" style={{ color: 'rgb(68, 84, 111)' }}>
-      <img src={logo} alt="Logo" style={{ height: '30px' }} />
+      <img src={logo} alt="Logo" style={{ height: '45px' }} />
       </div>
 
       <Dropdown align="end">
