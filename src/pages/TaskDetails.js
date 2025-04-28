@@ -10,21 +10,28 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 const TaskDetails = (props) => {
 
     const [selectedTask, setSelectedTask] = useState(props.selectedTask);
-    const [tabs,setTabs] = useState([props.selectedTask.tabs]);
+    const [tabs, setTabs] = useState([props.selectedTask.tabs]);
     //const tabs = ['Grafana', 'Pager', 'SRE', 'TAM', 'BMAaS', 'DC', 'Jira'];
 
     useEffect(() => {
         setSelectedTask(props.selectedTask);
-       setTabs(props.selectedTask.tabs);
-        console.log(props,props.setSelectedTask, selectedTask.tabs)
-    }, [props,selectedTask]);
+        setTabs(props.selectedTask.tabs);
+        console.log(props, props.setSelectedTask, selectedTask.tabs)
+
+        // Set the first tab as active
+        if (props.selectedTask.tabs && props.selectedTask.tabs.length > 0) {
+            setactiveTab(props.selectedTask.tabs[0]);
+        }
+    }, [props, selectedTask]);
 
     const [activeTab, setactiveTab] = React.useState('');
 
-   
+
 
     const handleChange = (event, newactiveTab) => {
-        setactiveTab(newactiveTab);
+        if (newactiveTab !== null) {  // To prevent unselecting all
+            setactiveTab(newactiveTab);
+        }
     };
 
     return (
@@ -103,8 +110,8 @@ const TaskDetails = (props) => {
             </Row>
             <Row className="vh-50 d-flex flex-column p-3">
                 <Card className="vh-50 d-flex flex-column p-0">
-                <CardHeader style={{color: "black", fontSize: "20px"}}><strong>User Form</strong></CardHeader>
-                <CardBody></CardBody>
+                    <CardHeader style={{ color: "black", fontSize: "20px" }}><strong>User Form</strong></CardHeader>
+                    <CardBody></CardBody>
                 </Card>
             </Row>
         </Card>
