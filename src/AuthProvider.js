@@ -33,6 +33,7 @@ export const AuthProvider = ({ children }) => {
           } else {
             console.warn("User is authenticated but unauthorized");
             setIsAuthenticated(false); // ✅ Explicitly mark as not authorized
+            keycloakInstance.logout({ redirectUri: window.location.origin });
           }
         } else {
           setIsAuthenticated(false); // ✅ Not authenticated
