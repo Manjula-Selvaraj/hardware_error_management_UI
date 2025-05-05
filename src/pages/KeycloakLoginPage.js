@@ -6,29 +6,39 @@ const KeycloakLoginPage = () => {
   const { keycloak, setIsAuthenticated } = useContext(AuthContext);
   const [userInfo, setUserInfo] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (keycloak && keycloak.authenticated) {
-      setIsLoggedIn(true);
       const tokenParsed = keycloak.tokenParsed;
-      console.log("Token parsed:", keycloak.tokenParsed);
-
-      setUserInfo({
-        token: keycloak.token,
-        roles: keycloak.tokenParsed?.realm_access?.roles,
-        groups: tokenParsed?.groups || [],
-        name: tokenParsed?.name,
-        email: tokenParsed?.email,      });
+      const roles = tokenParsed?.realm_access?.roles || [];
+  
+      if (roles.includes("tasklist-user")) {
+        setIsLoggedIn(true);
+        setUserInfo({
+          token: keycloak.token,
+          roles,
+          name: tokenParsed?.name,
+          email: tokenParsed?.email,
+        });
+      } else {
+        // Show access denied message
+        setIsLoggedIn(false);
+        setUserInfo(null);
+        setAccessDenied(true);
+      }
     }
   }, [keycloak]);
+  
+  
 
   const handleLogin = (event) => {
     event.preventDefault();
     
     if (keycloak && !keycloak.authenticated) {
       keycloak.login({
-        redirectUri: window.location.origin + '/inbox' 
+        redirectUri: window.location.origin + '/' 
       }
     
     ).then(() => {
@@ -79,6 +89,12 @@ const KeycloakLoginPage = () => {
           <button onClick={handleLogout}>Logout</button>
         </div>
       )}
+      {accessDenied && (
+  <div style={{ color: 'red' }}>
+    Access Denied: You do not have permission to view the tasklist.
+  </div>
+)}
+
     </div>
   );
 };
