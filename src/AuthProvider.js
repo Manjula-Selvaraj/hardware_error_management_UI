@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
           const tokenParsed = keycloakInstance.tokenParsed;
           console.log(tokenParsed);
 
-          if (tokenParsed?.realm_access?.roles?.includes("tasklist-user")) {
+          if (tokenParsed?.realm_access?.roles?.includes("Tasklist")) {
             setIsAuthenticated(true); // ✅ User is authorized
           } else {
             console.warn("User is authenticated but unauthorized");

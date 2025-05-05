@@ -14,7 +14,7 @@ const KeycloakLoginPage = () => {
       const tokenParsed = keycloak.tokenParsed;
       const roles = tokenParsed?.realm_access?.roles || [];
   
-      if (roles.includes("tasklist-user")) {
+      if (roles.includes("Tasklist")) {
         setIsLoggedIn(true);
         setUserInfo({
           token: keycloak.token,

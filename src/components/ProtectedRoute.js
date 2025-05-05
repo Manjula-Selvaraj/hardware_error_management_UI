@@ -6,7 +6,7 @@ const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useContext(AuthContext);
 
   // You can add role-based access here if needed
-  const isAuthorized = useContext(AuthContext).keycloak?.tokenParsed?.realm_access?.roles?.includes('tasklist-user');
+  const isAuthorized = useContext(AuthContext).keycloak?.tokenParsed?.realm_access?.roles?.includes('Tasklist');
 
   if (!isAuthenticated) {
     return <div>Authenticating...</div>;
