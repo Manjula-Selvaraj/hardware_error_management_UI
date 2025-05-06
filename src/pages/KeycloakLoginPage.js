@@ -12,16 +12,24 @@ const KeycloakLoginPage = () => {
     if (keycloak && keycloak.authenticated) {
       setIsLoggedIn(true);
       const tokenParsed = keycloak.tokenParsed;
-      console.log("Token parsed:", keycloak.tokenParsed);
-
+      const roles = tokenParsed?.realm_access?.roles || [];
+  
       setUserInfo({
         token: keycloak.token,
-        roles: keycloak.tokenParsed?.realm_access?.roles,
+        roles,
         groups: tokenParsed?.groups || [],
         name: tokenParsed?.name,
-        email: tokenParsed?.email,      });
+        email: tokenParsed?.email,
+      });
+  
+      if (roles.includes('admin')) {
+        navigate('/inbox');
+      } else {
+        navigate('/unauthorized');
+      }
     }
-  }, [keycloak]);
+  }, [keycloak, navigate]);
+  
 
   const handleLogin = (event) => {
     event.preventDefault();
@@ -57,8 +65,16 @@ const KeycloakLoginPage = () => {
   };
 
   const handleRouteToInbox = () => {
-    navigate('/inbox'); 
-  };
+    const allowedRoles = ['inbox-access']; 
+    const userRoles = userInfo?.roles || [];
+  
+    const hasAccess = userRoles.some(role => allowedRoles.includes(role));
+  
+    if (hasAccess) {
+      navigate('/inbox');
+    } else {
+      alert('You are not authorized to access the Inbox page.');
+    }  };
 
   return (
     <div>
