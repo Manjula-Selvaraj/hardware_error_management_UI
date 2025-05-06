@@ -18,17 +18,45 @@ const ProjectDetails = ({ selectedTask: initialSelectedTask }) => {
 
 
     useEffect(() => {
-        const matchedProject = data.find(item => item.id === initialSelectedTask?.id) || {};
-        setSelectedProject(matchedProject);
-        setComments(matchedProject?.fields?.comment?.comments || []);
+        try {
+            if (!Array.isArray(data)) throw new Error("Data is not an array");
+
+            const matchedProject = data.find(item => item?.id === initialSelectedTask?.id);
+            if (!matchedProject) {
+                console.warn("No matching project found for selected task.");
+                setSelectedProject({});
+                setComments([]);
+                return;
+            }
+
+            setSelectedProject(matchedProject);
+            const commentList = matchedProject?.fields?.comment?.comments;
+            setComments(Array.isArray(commentList) ? commentList : []);
+        } catch (error) {
+            console.error("Error processing jsonData:", error);
+            setSelectedProject({});
+            setComments([]);
+        }
     }, [initialSelectedTask, data]);
 
+
     const extractDescriptionText = (desc) => {
-        if (!desc?.content) return "No description available";
-        return desc.content
-            .map(block => block.content?.map(inner => inner.text).join(" "))
-            .join("\n");
+        if (!Array.isArray(desc?.content)) return "No description available";
+
+        try {
+            return desc.content
+                .map(block => {
+                    if (!Array.isArray(block?.content)) return "";
+                    return block.content.map(inner => inner?.text || "").join(" ");
+                })
+                .join("\n")
+                .trim() || "No description available";
+        } catch (err) {
+            console.error("Failed to parse description:", err);
+            return "No description available";
+        }
     };
+
 
     const updateData = (newComments) => {
         const updatedData = data.map(item => {
@@ -58,9 +86,6 @@ const ProjectDetails = ({ selectedTask: initialSelectedTask }) => {
                 }
             }
         }));
-
-        // Persist to localStorage
-        localStorage.setItem('projectData', JSON.stringify(updatedData));
     };
 
     const handleCommentChange = (e) => {
@@ -69,7 +94,7 @@ const ProjectDetails = ({ selectedTask: initialSelectedTask }) => {
 
     const handleSaveComment = (comment) => {
 
-        const newComments = [...comments, comment];
+        const newComments = [comment, ...comments];
         setComments(newComments);
         setComment('');
         updateData(newComments);
@@ -140,12 +165,14 @@ const ProjectDetails = ({ selectedTask: initialSelectedTask }) => {
                                 <div className="d-flex flex-wrap gap-2 mb-3">
                                     <button
                                         className="btn btn-outline-danger btn-sm border-none"
+                                        aria-label="clear comment"
                                         onClick={() => setComment("")}
                                     >
                                         Cancel
                                     </button>
                                     <button
                                         className="btn btn-outline-success btn-sm border-none"
+                                        aria-label="Save comment"
                                         onClick={(e) => handleSaveComment(comment)}
                                     >
                                         Save
@@ -159,15 +186,9 @@ const ProjectDetails = ({ selectedTask: initialSelectedTask }) => {
                                             <div className="card-body">
                                                 <p>{comment}</p>
                                                 <FaTrashAlt
+                                                    className='delete-icon'
+                                                    aria-label="Delete comment"
                                                     onClick={() => handleDeleteComment(index)}
-                                                    style={{
-                                                        cursor: 'pointer',
-                                                        fontSize: '16px',
-                                                        color: 'red',
-                                                        position: 'absolute',
-                                                        bottom: '10px',
-                                                        right: '10px'
-                                                    }}
                                                 />
                                             </div>
                                         </div>

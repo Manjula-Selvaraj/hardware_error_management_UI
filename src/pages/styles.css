@@ -169,3 +169,48 @@
   .border-none{
     border: none !important;
   }
+
+  .full-height {
+    max-height: 100vh !important;
+   
+  }
+  
+  .transparent{
+    background-color: transparent !important;
+  }
+
+  .scrollable-y {
+    overflow-y: scroll !important;
+  }
+  
+  .delete-icon {
+    cursor: pointer;
+    font-size: 16px;
+    color: red;
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+  }
+  
+  .scrollable-container {
+    max-height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #888 transparent; /* For Firefox */
+  }
+  
+  /* For Chrome, Edge, and Safari */
+  .scrollable-container::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .scrollable-container::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 3px;
+  }
+  
+  .scrollable-container::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  

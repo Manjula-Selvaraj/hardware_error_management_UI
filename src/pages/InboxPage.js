@@ -65,7 +65,7 @@ const InboxPage = () => {
     <div className="vh-100 d-flex flex-column">
       <Header username="Manjula" onLogout={() => alert('Logout clicked')} />
 
-      <div className="d-flex" style={{ maxHeight: "100vh", backgroundColor: 'transparent' }}>
+      <div className="d-flex full-height transparent" >
         <div
           className={`bg-light border-end sidebar ${isCollapsed ? 'collapsed' : 'expanded'}`}
         >
@@ -84,7 +84,7 @@ const InboxPage = () => {
           </div>
 
           {!isCollapsed && (
-            <div className="p-3" style={{ maxHeight: '100vh', overflowY: 'scroll' }}>
+            <div className="p-3 full-height scrollable-y" >
               {currentTasks.length > 0 ? (
                 currentTasks.map((task) => (
                   <div
