@@ -166,3 +166,6 @@
     width: 300px;
   }
   
+  .border-none{
+    border: none !important;
+  }
