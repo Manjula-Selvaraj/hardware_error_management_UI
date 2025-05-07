@@ -7,28 +7,37 @@ const KeycloakLoginPage = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (keycloak && keycloak.authenticated) {
       setIsLoggedIn(true);
       const tokenParsed = keycloak.tokenParsed;
-      console.log("Token parsed:", keycloak.tokenParsed);
-
+      const roles = tokenParsed?.realm_access?.roles || [];
+  
       setUserInfo({
         token: keycloak.token,
-        roles: keycloak.tokenParsed?.realm_access?.roles,
+        roles,
         groups: tokenParsed?.groups || [],
         name: tokenParsed?.name,
-        email: tokenParsed?.email,      });
+        email: tokenParsed?.email,
+      });
+  
+      if (roles.includes('tasklist')) {
+        navigate('/tasklist');
+      } else {
+        navigate('/unauthorized');
+      }
     }
-  }, [keycloak]);
+  }, [keycloak, navigate]);
+  
 
   const handleLogin = (event) => {
     event.preventDefault();
     
     if (keycloak && !keycloak.authenticated) {
       keycloak.login({
-        redirectUri: window.location.origin + '/inbox' 
+        redirectUri: window.location.origin + '/tasklist' 
       }
     
     ).then(() => {
@@ -57,8 +66,18 @@ const KeycloakLoginPage = () => {
   };
 
   const handleRouteToInbox = () => {
-    navigate('/inbox'); 
-  };
+    const allowedRoles = ['inbox-access']; 
+    const userRoles = userInfo?.roles || [];
+  
+    const hasAccess = userRoles.some(role => allowedRoles.includes(role));
+  
+    if (hasAccess) {
+      setErrorMessage('');
+      navigate('/tasklist');
+    } else {
+
+      setErrorMessage('You are not authorized to access the Inbox page.');
+    }  };
 
   return (
     <div>
@@ -77,6 +96,11 @@ const KeycloakLoginPage = () => {
           <p><strong>Groups:</strong> {userInfo?.groups?.join(', ')}</p>
           <button onClick={handleRouteToInbox}>Go to Inbox</button>
           <button onClick={handleLogout}>Logout</button>
+          {errorMessage && (
+            <div style={{ color: 'red', marginTop: '10px' }}>
+              {errorMessage}
+            </div>
+          )}
         </div>
       )}
     </div>

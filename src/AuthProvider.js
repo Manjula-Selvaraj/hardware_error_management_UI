@@ -6,16 +6,17 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [keycloak, setKeycloak] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
 
     useEffect(() => {
       const keycloakInstance = new Keycloak({
         url: 'http://localhost:8080',
         realm: 'myrealm',
-        clientId: 'react-client-connect',
+        clientId: 'my-react-client',
       });
 
       keycloakInstance.init({
-        // onLoad: 'check-sso',
+        // onLoad: 'login-required',
         // silentCheckSsoRedirectUri: window.location.origin + '/silent-check-sso.html',
         pkceMethod: 'S256',
         // checkLoginIframe: false
@@ -23,6 +24,20 @@ export const AuthProvider = ({ children }) => {
         .then(authenticated => {
           setKeycloak(keycloakInstance);
           setIsAuthenticated(authenticated);
+          if (authenticated) {
+            const tokenParsed = keycloakInstance.tokenParsed;
+            setUserInfo({
+              token: keycloakInstance.token,
+              roles: tokenParsed?.realm_access?.roles || [],
+              groups: tokenParsed?.groups || [],
+              name: tokenParsed?.name,
+              email: tokenParsed?.email,
+            });
+            console.log('User Info:', tokenParsed);
+            const name = tokenParsed?.name;
+            setUserInfo({ name });
+
+          }
         })
         .catch(err => {
           console.error('Keycloak init failed:', err);
@@ -30,7 +45,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
   return (
-    <AuthContext.Provider value={{ keycloak, isAuthenticated, setIsAuthenticated }}>
+    <AuthContext.Provider value={{ keycloak, isAuthenticated, setIsAuthenticated,userInfo }}>
       {children}
     </AuthContext.Provider>
   );
