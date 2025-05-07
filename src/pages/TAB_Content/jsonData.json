@@ -1,0 +1,174 @@
+[{
+    "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+    "id": "10000",
+    "self": "https://shaukat.atlassian.net/rest/api/3/issue/10000",
+    "key": "JIR-1",
+    "fields": {
+        "statuscategorychangedate": "2025-04-28T15:25:44.672+0530",
+        "issuetype": {
+            "self": "https://shaukat.atlassian.net/rest/api/3/issuetype/10001",
+            "id": "10001",
+            "description": "A small, distinct piece of work.",
+            "iconUrl": "https://shaukat.atlassian.net/rest/api/2/universal_avatar/view/type/issuetype/avatar/10318?size=medium",
+            "name": "Task",
+            "subtask": false,
+            "avatarId": 10318,
+            "entityId": "186fe103-df6a-4f7c-8226-d7998bce19c1",
+            "hierarchyLevel": 0
+        },
+        "components": [],
+        "timespent": null,
+        "timeoriginalestimate": null,
+        "project": {
+            "self": "https://shaukat.atlassian.net/rest/api/3/project/10000",
+            "id": "10000",
+            "key": "JIR",
+            "name": "JiraProject",
+            "projectTypeKey": "software",
+            "simplified": true,
+            "avatarUrls": {
+                "48x48": "https://shaukat.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10401",
+                "24x24": "https://shaukat.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10401?size=small",
+                "16x16": "https://shaukat.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10401?size=xsmall",
+                "32x32": "https://shaukat.atlassian.net/rest/api/3/universal_avatar/view/type/project/avatar/10401?size=medium"
+            }
+        },
+        "description": {
+            "type": "doc",
+            "version": 1,
+            "content": [
+                {
+                    "type": "paragraph",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": "This description has been updated second time via REST API"
+                        }
+                    ]
+                }
+            ]
+        },
+        "fixVersions": [],
+        "aggregatetimespent": null,
+        "statusCategory": {
+            "self": "https://shaukat.atlassian.net/rest/api/3/statuscategory/2",
+            "id": 2,
+            "key": "new",
+            "colorName": "blue-gray",
+            "name": "To Do"
+        },
+        "resolution": null,
+        "timetracking": {},
+        "security": null,
+        "attachment": [],
+        "aggregatetimeestimate": null,
+        "resolutiondate": null,
+        "workratio": -1,
+        "summary": "Updated second time Test Issue from Postman",
+        "issuerestriction": {
+            "issuerestrictions": {},
+            "shouldDisplay": true
+        },
+        "watches": {
+            "self": "https://shaukat.atlassian.net/rest/api/3/issue/JIR-1/watchers",
+            "watchCount": 1,
+            "isWatching": true
+        },
+        "lastViewed": "2025-04-28T15:38:16.952+0530",
+        "creator": {
+            "self": "https://shaukat.atlassian.net/rest/api/3/user?accountId=712020%3Ada4407d6-9b83-4a77-b362-b781aaff4bff",
+            "accountId": "712020:da4407d6-9b83-4a77-b362-b781aaff4bff",
+            "emailAddress": "shaukatmakandar786@gmail.com",
+            "avatarUrls": {
+                "48x48": "https://secure.gravatar.com/avatar/173bc1d51a5e2a6650e86fef45dec500?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMC-5.png",
+                "24x24": "https://secure.gravatar.com/avatar/173bc1d51a5e2a6650e86fef45dec500?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMC-5.png",
+                "16x16": "https://secure.gravatar.com/avatar/173bc1d51a5e2a6650e86fef45dec500?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMC-5.png",
+                "32x32": "https://secure.gravatar.com/avatar/173bc1d51a5e2a6650e86fef45dec500?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMC-5.png"
+            },
+            "displayName": "MacTech. com",
+            "active": true,
+            "timeZone": "Asia/Calcutta",
+            "accountType": "atlassian"
+        },
+        "subtasks": [],
+        "created": "2025-04-28T15:25:44.164+0530",
+        "customfield_10020": null,
+        "customfield_10021": null,
+        "reporter": {
+            "self": "https://shaukat.atlassian.net/rest/api/3/user?accountId=712020%3Ada4407d6-9b83-4a77-b362-b781aaff4bff",
+            "accountId": "712020:da4407d6-9b83-4a77-b362-b781aaff4bff",
+            "emailAddress": "shaukatmakandar786@gmail.com",
+            "avatarUrls": {
+                "48x48": "https://secure.gravatar.com/avatar/173bc1d51a5e2a6650e86fef45dec500?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMC-5.png",
+                "24x24": "https://secure.gravatar.com/avatar/173bc1d51a5e2a6650e86fef45dec500?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMC-5.png",
+                "16x16": "https://secure.gravatar.com/avatar/173bc1d51a5e2a6650e86fef45dec500?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMC-5.png",
+                "32x32": "https://secure.gravatar.com/avatar/173bc1d51a5e2a6650e86fef45dec500?d=https%3A%2F%2Favatar-management--avatars.us-west-2.prod.public.atl-paas.net%2Finitials%2FMC-5.png"
+            },
+            "displayName": "MacTech. com",
+            "active": true,
+            "timeZone": "Asia/Calcutta",
+            "accountType": "atlassian"
+        },
+        "aggregateprogress": {
+            "progress": 0,
+            "total": 0
+        },
+        "priority": {
+            "self": "https://shaukat.atlassian.net/rest/api/3/priority/3",
+            "iconUrl": "https://shaukat.atlassian.net/images/icons/priorities/medium_new.svg",
+            "name": "Medium",
+            "id": "3"
+        },
+        "customfield_10001": null,
+        "labels": [],
+        "customfield_10016": null,
+        "environment": null,
+        "customfield_10019": "0|hzzzzz:",
+        "timeestimate": null,
+        "aggregatetimeoriginalestimate": null,
+        "versions": [],
+        "duedate": null,
+        "progress": {
+            "progress": 0,
+            "total": 0
+        },
+        "issuelinks": [],
+        "votes": {
+            "self": "https://shaukat.atlassian.net/rest/api/3/issue/JIR-1/votes",
+            "votes": 0,
+            "hasVoted": false
+        },
+        "comment": {
+            "comments": [],
+            "self": "https://shaukat.atlassian.net/rest/api/3/issue/10000/comment",
+            "maxResults": 0,
+            "total": 0,
+            "startAt": 0
+        },
+        "assignee": "Devi",
+        "worklog": {
+            "startAt": 0,
+            "maxResults": 20,
+            "total": 0,
+            "worklogs": []
+        },
+        "updated": "2025-04-28T15:56:48.411+0530",
+        "status": {
+            "self": "https://shaukat.atlassian.net/rest/api/3/status/10000",
+            "description": "",
+            "iconUrl": "https://shaukat.atlassian.net/",
+            "name": "To Do",
+            "id": "10000",
+            "statusCategory": {
+                "self": "https://shaukat.atlassian.net/rest/api/3/statuscategory/2",
+                "id": 2,
+                "key": "new",
+                "colorName": "blue-gray",
+                "name": "To Do"
+            }
+        }
+    }
+}
+
+
+]

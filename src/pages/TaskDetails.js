@@ -3,7 +3,11 @@ import { Card, CardBody, CardHeader, Col, Row } from 'react-bootstrap';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import './styles.css';
-import ProjectDetails from './ProjectDetails';
+import JiraBoard from './TAB_Content/JiraBoard';
+import SRE_Details from './TAB_Content/SRE_Details';
+import TAM_Details from './TAB_Content/TAM_Details';
+import BAMAAS_Details from './TAB_Content/BAMAAS_Details';
+import DC_Details from './TAB_Content/DC_Details';
 
 const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
   const [selectedTask, setSelectedTask] = useState(initialSelectedTask || {});
@@ -71,29 +75,37 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
           </ToggleButtonGroup>
 
           <Card className="vh-50 d-flex flex-column p-1 mt-1 mb-1">
-            <div className="text-start margin">
+            <div className="text-start"
+              style={{
+                marginTop: ["SRE", "TAM", "BMAaS", "DC"].includes(activeTab) ? "5px" : "25px",
+                marginLeft: ["SRE", "TAM", "BMAaS", "DC"].includes(activeTab) ? "0px" : "25px"
+              }}>
               {activeTab === "Grafana" && <h4>This is the Grafana tab</h4>}
               {activeTab === "Pager" && <h4>This is the Pager tab</h4>}
-              {activeTab === "SRE" && <h4>This is the SRE tab</h4>}
-              {activeTab === "TAM" && <h4>This is the TAM tab</h4>}
-              {activeTab === "BMAaS" && <h4>This is the BMAAS tab</h4>}
-              {activeTab === "DC" && <h4>This is the DC tab</h4>}
-              {activeTab === "Jira" && <ProjectDetails selectedTask={selectedTask} />}
+              {activeTab === "SRE" && <> <SRE_Details selectedTask={selectedTask} /> </>}
+              {activeTab === "TAM" && <TAM_Details selectedTask={selectedTask} />}
+              {activeTab === "BMAaS" && <BAMAAS_Details selectedTask={selectedTask} />}
+              {activeTab === "DC" && <><DC_Details selectedTask={selectedTask} activeTab={"DC"} />  </>}
+              {activeTab === "Jira" && <JiraBoard selectedTask={selectedTask} />}
             </div>
           </Card>
         </Card>
       </Row>
 
-      <Row className="vh-50 d-flex flex-column p-3">
-        <Card className="vh-50 d-flex flex-column p-0">
-          <CardHeader style={{ color: "black", fontSize: "20px" }}>
-            <strong>User Form</strong>
-          </CardHeader>
-          <CardBody>
-            {/* User Form Content */}
-          </CardBody>
-        </Card>
-      </Row>
+
+      {["SRE", "TAM", "BMAaS", "DC"].includes(activeTab) ? <>
+        <Row className="vh-50 d-flex flex-column p-3">
+          <Card className="vh-50 d-flex flex-column p-0">
+            <CardHeader style={{ color: "black", fontSize: "20px" }}>
+              <strong>User Form</strong>
+            </CardHeader>
+            <CardBody>
+              {/* User Form Content */}
+            </CardBody>
+          </Card>
+        </Row>
+      </> : null}
+
     </Card>
   );
 };

@@ -12,7 +12,6 @@ const Header = () =>
   
   {
     const { keycloak, userInfo } = useContext(AuthContext);
-    console.log(userInfo.name, 'f');
 
     const handleLogout = () => {
       if (keycloak) {

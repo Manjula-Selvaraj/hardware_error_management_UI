@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight, FaTrashAlt, FaUserCircle } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Card, CardBody, CardHeader, Col, Dropdown, Row } from 'react-bootstrap';
-import './styles.css';
+import '../styles.css';
 import { Breadcrumb } from 'react-bootstrap';
 
 import jsonData from './jsonData.json';
 
-const ProjectDetails = ({ selectedTask: initialSelectedTask }) => {
+const JiraBoard = ({ selectedTask: initialSelectedTask }) => {
     const [selectedProject, setSelectedProject] = useState({});
     const [data, setData] = useState(jsonData);
     const [comment, setComment] = useState('');
@@ -100,17 +100,11 @@ const ProjectDetails = ({ selectedTask: initialSelectedTask }) => {
         updateData(newComments);
     };
 
-    const handleDeleteComment = (index) => {
-        const newComments = comments.filter((_, i) => i !== index);
-        setComments(newComments);
-        updateData(newComments);
-    };
-
 
 
     return (
         <Row>
-            <Col md={7} className="mb-2 mt-3 text-start">
+            <Col md={8} className="mb-2 mt-3 text-start">
                 {/* Breadcrumbs */}
                 <div className="mx-1 mt-1">
                     <Breadcrumb>
@@ -134,7 +128,7 @@ const ProjectDetails = ({ selectedTask: initialSelectedTask }) => {
                 <Card className="mb-4">
                     <CardBody>
                         {/* Tab Navigation */}
-                        <div className="d-flex border-bottom mb-3">
+                        <div className="d-flex mb-3">
                             {tabs.map(tab => (
                                 <button
                                     key={tab}
@@ -185,11 +179,6 @@ const ProjectDetails = ({ selectedTask: initialSelectedTask }) => {
                                         <div key={index} className="card mb-2 position-relative">
                                             <div className="card-body">
                                                 <p>{comment}</p>
-                                                <FaTrashAlt
-                                                    className='delete-icon'
-                                                    aria-label="Delete comment"
-                                                    onClick={() => handleDeleteComment(index)}
-                                                />
                                             </div>
                                         </div>
                                     ))}
@@ -207,7 +196,7 @@ const ProjectDetails = ({ selectedTask: initialSelectedTask }) => {
             </Col>
 
             {/* Vertical Line */}
-            <Col md="auto" className="d-flex align-items-center">
+            <Col md={1} className="d-flex align-items-right">
                 <div style={{ borderLeft: '1px solid #ccc', height: '99vh' }}></div>
             </Col>
 
@@ -242,4 +231,4 @@ const ProjectDetails = ({ selectedTask: initialSelectedTask }) => {
     );
 };
 
-export default ProjectDetails;
+export default JiraBoard;
