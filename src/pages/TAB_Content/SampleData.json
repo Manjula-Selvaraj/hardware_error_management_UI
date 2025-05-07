@@ -1,0 +1,206 @@
+[
+    {
+      "id": "task-grafana-001",
+      "fields": {
+        "task":  "Grafana",
+        "description": {
+          "content": [
+            {
+              "content": [
+                { "text": "Monitoring dashboards setup and tuning using Grafana." }
+              ]
+            }
+          ]
+        },
+        "suggestion": {
+          "Suggestions": [
+            {
+              "id": 1,
+              "title": "Add CPU Metrics",
+              "description": "Include CPU usage panel for all nodes.",
+              "createdAt": "2025-05-01",
+              "status": "Pending"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "task-pager-002",
+      "fields": {
+        "task":  "Pager" ,
+        "description": {
+          "content": [
+            {
+              "content": [
+                { "text": "Incident response automation using PagerDuty." }
+              ]
+            }
+          ]
+        },
+        "suggestion": {
+          "Suggestions": [
+            {
+              "id": 1,
+              "title": "Define Escalation Policies",
+              "description": "Create rules for multi-level incident escalation.",
+              "createdAt": "2025-05-02",
+              "status": "Approved"
+            },
+            {
+                "id": 2,
+                "title": "Optimize Error Budget",
+                "description": "Define SLIs and error budgets per service.",
+                "createdAt": "2025-05-03",
+                "status": "Pending"
+              }
+          ]
+        }
+      }
+    },
+    {
+      "id": "task-sre-003",
+      "fields": {
+        "task":  "SRE" ,
+        "description": {
+          "content": [
+            {
+              "content": [
+                { "text": "Site Reliability Engineering for service stability." }
+              ]
+            }
+          ]
+        },
+        "suggestion": {
+          "Suggestions": [
+            {
+              "id": 1,
+              "title": "Optimize Error Budget",
+              "description": "Define SLIs and error budgets per service.",
+              "createdAt": "2025-05-03",
+              "status": "Pending"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "task-tam-004",
+      "fields": {
+        "task":  "TAM",
+        "description": {
+          "content": [
+            {
+              "content": [
+                { "text": "Customer relationship and issue resolution strategies." }
+              ]
+            }
+          ]
+        },
+        "suggestion": {
+          "Suggestions": [
+            {
+              "id": 1,
+              "title": "Client Training Plan",
+              "description": "Schedule regular technical trainings for clients.",
+              "createdAt": "2025-05-04",
+              "status": "Pending"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "task-bmaas-005",
+      "fields": {
+        "task":  "BMAAS" ,
+        "description": {
+          "content": [
+            {
+              "content": [
+                { "text": "Analytics-as-a-Service optimization and visualization." }
+              ]
+            }
+          ]
+        },
+        "suggestion": {
+          "Suggestions": [
+            {
+              "id": 1,
+              "title": "Refine Forecast Models",
+              "description": "Update time series model for demand prediction.",
+              "createdAt": "2025-05-05",
+              "status": "Approved"
+            },
+            {
+                "id": 2,
+                "title": "Install Fire Suppression",
+                "description": "Evaluate options for advanced fire safety systems.",
+                "createdAt": "2025-05-06",
+                "status": "Rejected"
+              }
+          ]
+        }
+      }
+    },
+    {
+      "id": "task-dc-006",
+      "fields": {
+        "task":  "DC" ,
+        "description": {
+          "content": [
+            {
+              "content": [
+                { "text": "Infrastructure improvements in the data center." }
+              ]
+            }
+          ]
+        },
+        "suggestion": {
+          "Suggestions": [
+            {
+              "id": 1,
+              "title": "Install Fire Suppression",
+              "description": "Evaluate options for advanced fire safety systems.",
+              "createdAt": "2025-05-06",
+              "status": "Rejected"
+            },
+            {
+                "id": 2,
+                "title": "Refine Forecast Models",
+                "description": "Update time series model for demand prediction.",
+                "createdAt": "2025-05-05",
+                "status": "Approved"
+              }
+          ]
+        }
+      }
+    },
+    {
+      "id": "task-jira-007",
+      "fields": {
+        "task":  "Jira" ,
+        "description": {
+          "content": [
+            {
+              "content": [
+                { "text": "task management and ticket workflows." }
+              ]
+            }
+          ]
+        },
+        "suggestion": {
+          "Suggestions": [
+            {
+              "id": 1,
+              "title": "Automate Status Transitions",
+              "description": "Use post functions to auto-move tickets on branch commit.",
+              "createdAt": "2025-05-07",
+              "status": "Pending"
+            }
+          ]
+        }
+      }
+    }
+  ]
+  
