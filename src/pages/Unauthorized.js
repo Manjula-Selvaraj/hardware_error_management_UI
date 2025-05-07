@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { AuthContext } from '../AuthProvider'; // adjust the path as needed
+import { AuthContext } from '../AuthProvider'; 
 
 export default function Unauthorized() {
   const { keycloak } = useContext(AuthContext);

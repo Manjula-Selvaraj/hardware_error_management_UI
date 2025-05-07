@@ -14,9 +14,9 @@ const AppRoutes = () => {
       <Route path="/" element={<KeycloakLoginPage />} />
       <Route path='/header' element={<Header />} />
       <Route
-      path="/inbox"
+      path="/tasklist"
       element={
-        <ProtectedRoute allowedRoles={['admin']}>
+        <ProtectedRoute allowedRoles={['tasklist']}>
           <InboxPage />
         </ProtectedRoute>
       }

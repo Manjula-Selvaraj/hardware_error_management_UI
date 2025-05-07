@@ -7,6 +7,7 @@ const KeycloakLoginPage = () => {
   const [userInfo, setUserInfo] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (keycloak && keycloak.authenticated) {
@@ -22,8 +23,8 @@ const KeycloakLoginPage = () => {
         email: tokenParsed?.email,
       });
   
-      if (roles.includes('admin')) {
-        navigate('/inbox');
+      if (roles.includes('tasklist')) {
+        navigate('/tasklist');
       } else {
         navigate('/unauthorized');
       }
@@ -36,7 +37,7 @@ const KeycloakLoginPage = () => {
     
     if (keycloak && !keycloak.authenticated) {
       keycloak.login({
-        redirectUri: window.location.origin + '/inbox' 
+        redirectUri: window.location.origin + '/tasklist' 
       }
     
     ).then(() => {
@@ -71,9 +72,11 @@ const KeycloakLoginPage = () => {
     const hasAccess = userRoles.some(role => allowedRoles.includes(role));
   
     if (hasAccess) {
-      navigate('/inbox');
+      setErrorMessage('');
+      navigate('/tasklist');
     } else {
-      alert('You are not authorized to access the Inbox page.');
+
+      setErrorMessage('You are not authorized to access the Inbox page.');
     }  };
 
   return (
@@ -93,6 +96,11 @@ const KeycloakLoginPage = () => {
           <p><strong>Groups:</strong> {userInfo?.groups?.join(', ')}</p>
           <button onClick={handleRouteToInbox}>Go to Inbox</button>
           <button onClick={handleLogout}>Logout</button>
+          {errorMessage && (
+            <div style={{ color: 'red', marginTop: '10px' }}>
+              {errorMessage}
+            </div>
+          )}
         </div>
       )}
     </div>
