@@ -49,20 +49,11 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
     }));
   };
   const [sentData, setSentData] = useState({});
-  // const handleSubmit = (tab, formData) => {
-  //   // Store the form data
-  //   setFormResponses(prev => ({
-  //     ...prev,
-  //     [tab]: formData
-  //   }));
   
-  //   // Optional: Store submitted data for later use (could be used in DC Details)
-  //   setSentData(prev => ({ ...prev, [tab]: formData }));
-  // };
   
   const handleSubmit = (tab, formData) => {
     setFormResponses(prev => ({ ...prev, [tab]: formData }));
-    setFormSubmitted(true); // Trigger the layout change
+    setFormSubmitted(true); 
   };
   
   return (
@@ -115,8 +106,10 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
                 />
               )}
               
-              {activeTab === "TAM" && <TAM_Details selectedTask={selectedTask} />}
-              {activeTab === "BMAaS" && <BAMAAS_Details selectedTask={selectedTask} />}
+              {activeTab === "TAM" && <TAM_Details selectedTask={selectedTask}  activeTab="SRE"
+              formData={formResponses["TAM"]}/>}
+              {activeTab === "BMAaS" && <BAMAAS_Details selectedTask={selectedTask} activeTab="BMAaS"
+              formData={formResponses["BMAaS"]} />}
               {activeTab === "DC" && (
                 <div>
                   <DC_Details selectedTask={selectedTask} activeTab="DC" formData={formResponses["DC"]} />
@@ -130,14 +123,17 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
 
       {["SRE", "TAM", "BMAaS", "DC"].includes(activeTab) ? <>
         <Row className="vh-50 d-flex flex-column p-3">
+        {!formSubmitted && (
           <Card className="vh-50 d-flex flex-column p-0">
             <CardHeader style={{ color: "black", fontSize: "20px" }}>
               <strong>User Form</strong>
             </CardHeader>
-            <UserForm onSubmit={handleSubmit} activeTab={activeTab} />
-
-           
-          </Card>
+         
+              <UserForm onSubmit={handleSubmit} activeTab={activeTab} />
+              
+              
+              </Card>
+            )}
         </Row>
       </> : null}
       
