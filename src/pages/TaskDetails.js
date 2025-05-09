@@ -8,12 +8,15 @@ import SRE_Details from './TAB_Content/SRE_Details';
 import TAM_Details from './TAB_Content/TAM_Details';
 import BAMAAS_Details from './TAB_Content/BAMAAS_Details';
 import DC_Details from './TAB_Content/DC_Details';
-
+import UserForm from './TAB_Content/UserForm';
 const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
   const [selectedTask, setSelectedTask] = useState(initialSelectedTask || {});
   const [tabs, setTabs] = useState(initialSelectedTask?.tabs || []);
   const [activeTab, setActiveTab] = useState('');
   const [isClaimed, setisClaim] = useState(initialSelectedTask?.assignie || false);
+  const [formResponses, setFormResponses] = useState({});
+  const [showLeftColumn, setShowLeftColumn] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   useEffect(() => {
     if (initialSelectedTask) {
@@ -39,7 +42,29 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
       setActiveTab(newActiveTab);
     }
   };
-
+  const handleUserFormSubmit = (tab, data) => {
+    setFormResponses(prev => ({
+      ...prev,
+      [tab]: data
+    }));
+  };
+  const [sentData, setSentData] = useState({});
+  // const handleSubmit = (tab, formData) => {
+  //   // Store the form data
+  //   setFormResponses(prev => ({
+  //     ...prev,
+  //     [tab]: formData
+  //   }));
+  
+  //   // Optional: Store submitted data for later use (could be used in DC Details)
+  //   setSentData(prev => ({ ...prev, [tab]: formData }));
+  // };
+  
+  const handleSubmit = (tab, formData) => {
+    setFormResponses(prev => ({ ...prev, [tab]: formData }));
+    setFormSubmitted(true); // Trigger the layout change
+  };
+  
   return (
     <Card className="vh-100 d-flex flex-column p-1 scrollable-container" >
       <Row>
@@ -82,11 +107,21 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
               }}>
               {activeTab === "Grafana" && <h4>This is the Grafana tab</h4>}
               {activeTab === "Pager" && <h4>This is the Pager tab</h4>}
-              {activeTab === "SRE" && <> <SRE_Details selectedTask={selectedTask} /> </>}
+              {activeTab === "SRE" && (
+                <SRE_Details
+                  selectedTask={selectedTask}
+                  activeTab="SRE"
+                  formData={formResponses["SRE"]}
+                />
+              )}
+              
               {activeTab === "TAM" && <TAM_Details selectedTask={selectedTask} />}
               {activeTab === "BMAaS" && <BAMAAS_Details selectedTask={selectedTask} />}
-              {activeTab === "DC" && <><DC_Details selectedTask={selectedTask} activeTab={"DC"} />  </>}
-              {activeTab === "Jira" && <JiraBoard selectedTask={selectedTask} />}
+              {activeTab === "DC" && (
+                <div>
+                  <DC_Details selectedTask={selectedTask} activeTab="DC" formData={formResponses["DC"]} />
+                </div>
+              )}              {activeTab === "Jira" && <JiraBoard selectedTask={selectedTask} />}
             </div>
           </Card>
         </Card>
@@ -99,12 +134,13 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
             <CardHeader style={{ color: "black", fontSize: "20px" }}>
               <strong>User Form</strong>
             </CardHeader>
-            <CardBody>
-              {/* User Form Content */}
-            </CardBody>
+            <UserForm onSubmit={handleSubmit} activeTab={activeTab} />
+
+           
           </Card>
         </Row>
       </> : null}
+      
 
     </Card>
   );
