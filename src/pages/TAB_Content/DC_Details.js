@@ -12,7 +12,6 @@ const DC_Details = ({ selectedTask: initialSelectedTask, activeTab: selectedTab,
     setSelectedProject(matchedProject);
     const filteredData = SampleData.find(item => item.fields.task === selectedTab)?.fields.suggestion.Suggestions || [];
     setSuggestions(filteredData);
-    alert("matchedProject",filteredData)
   }, [initialSelectedTask, selectedTab]);
 
   const isFormSubmitted = !!formData;
@@ -23,19 +22,10 @@ const DC_Details = ({ selectedTask: initialSelectedTask, activeTab: selectedTab,
         <Col md={6} className="d-flex mb-2 text-start">
           <Card className="mb-2 w-100">
             <CardBody className="d-flex flex-column">
-              <div className="mx-1">
-                <Breadcrumb>
-                  <Breadcrumb.Item href="#">Projects</Breadcrumb.Item>
-                  {selectedProject?.fields?.project?.name && (
-                    <Breadcrumb.Item active>{selectedProject.fields.project.name}</Breadcrumb.Item>
-                  )}
-                </Breadcrumb>
-              </div>
+             
 
               <div>
-                <h4>DC Details for Task: {initialSelectedTask?.title}</h4>
                 <div>
-                  <h5>Form Data Submitted:</h5>
                   <p><strong>Comments:</strong> <hr></hr>{formData.comments}</p>
                 </div>
               </div>

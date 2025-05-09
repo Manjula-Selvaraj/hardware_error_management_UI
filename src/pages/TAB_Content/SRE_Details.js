@@ -35,19 +35,9 @@ const SRE_Details = ({selectedTask: initialSelectedTask, activeTab: selectedTab,
           <Col md={6} className="d-flex mb-2 text-start">
             <Card className="mb-2 w-100">
               <CardBody className="d-flex flex-column">
-                <div className="mx-1">
-                  <Breadcrumb>
-                    <Breadcrumb.Item href="#">Projects</Breadcrumb.Item>
-                    {selectedProject?.fields?.project?.name && (
-                      <Breadcrumb.Item active>{selectedProject.fields.project.name}</Breadcrumb.Item>
-                    )}
-                  </Breadcrumb>
-                </div>
-  
+               
                 <div>
-                  <h4>DC Details for Task: {initialSelectedTask?.title}</h4>
                   <div>
-                    <h5>Form Data Submitted:</h5>
                     <p><strong>Comments:</strong> <hr></hr>{formData.comments}</p>
                   </div>
                 </div>
@@ -58,8 +48,9 @@ const SRE_Details = ({selectedTask: initialSelectedTask, activeTab: selectedTab,
   
         <Col md={isFormSubmitted ? 6 : 12} className="d-flex mb-2">
           <Card className="mb-2 w-100">
-            <CardHeader className="boldtext"> Suggestions</CardHeader> 
-            <CardHeader className="boldtext"> Suggestions</CardHeader>
+        
+          <CardBody><strong>Suggestions:</strong> </CardBody>
+       
             <CardBody className="d-flex flex-column">
               {suggestions.length === 0 ? (
                 <p className="text-muted">No suggestions available.</p>
