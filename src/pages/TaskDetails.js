@@ -6,8 +6,8 @@ import './styles.css';
 import JiraBoard from './TAB_Content/JiraBoard';
 import SRE_Details from './TAB_Content/SRE_Details';
 import TAM_Details from './TAB_Content/TAM_Details';
-import BMAas_Details from './TAB_Content/BMAaS_Details';
 import DC_Details from './TAB_Content/DC_Details';
+import BMAaS_Details from './TAB_Content/BMAaS_Details';
 import UserForm from './TAB_Content/UserForm';
 const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
   const [selectedTask, setSelectedTask] = useState(initialSelectedTask || {});
