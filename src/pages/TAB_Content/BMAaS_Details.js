@@ -26,7 +26,7 @@ const BMAaS_Details = ({ selectedTask: initialSelectedTask, activeTab: selectedT
     
     return (
         <Row className="d-flex align-items-stretch">
-      {isFormSubmitted && (
+     {isFormSubmitted && formData.id === initialSelectedTask.id && (
         <Col md={6} className="d-flex mb-2 text-start">
           <Card className="mb-2 w-100">
             <CardBody className="d-flex flex-column">
@@ -42,7 +42,7 @@ const BMAaS_Details = ({ selectedTask: initialSelectedTask, activeTab: selectedT
         </Col>
       )}
 
-      <Col md={isFormSubmitted ? 6 : 12} className="d-flex mb-2">
+      <Col md={(isFormSubmitted && formData.id === initialSelectedTask.id) ? 6 : 12} className="d-flex mb-2">
         <Card className="mb-2 w-100">
           <CardHeader className="boldtext">Suggestions</CardHeader>
           <CardBody className="d-flex flex-column">
