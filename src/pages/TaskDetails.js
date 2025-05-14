@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardBody, CardHeader, Col, Row } from 'react-bootstrap';
+import { Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Row } from 'react-bootstrap';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import './styles.css';
 import JiraBoard from './TAB_Content/JiraBoard';
 import SRE_Details from './TAB_Content/SRE_Details';
 import TAM_Details from './TAB_Content/TAM_Details';
-import BAMAAS_Details from './TAB_Content/BAMAAS_Details';
+import BMAas_Details from './TAB_Content/BMAaS_Details';
 import DC_Details from './TAB_Content/DC_Details';
 import UserForm from './TAB_Content/UserForm';
 const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
@@ -93,8 +93,8 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
           <Card className="vh-50 d-flex flex-column p-1 mt-1 mb-1">
             <div className="text-start"
               style={{
-                marginTop: ["SRE", "TAM", "BMAaS", "DC"].includes(activeTab) ? "5px" : "25px",
-                marginLeft: ["SRE", "TAM", "BMAaS", "DC"].includes(activeTab) ? "0px" : "25px"
+                marginTop: ["SRE", "TAM", "BMAas", "DC"].includes(activeTab) ? "5px" : "25px",
+                marginLeft: ["SRE", "TAM", "BMAas", "DC"].includes(activeTab) ? "0px" : "25px"
               }}>
               {activeTab === "Grafana" && <h4>This is the Grafana tab</h4>}
               {activeTab === "Pager" && <h4>This is the Pager tab</h4>}
@@ -108,7 +108,7 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
               
               {activeTab === "TAM" && <TAM_Details selectedTask={selectedTask}  activeTab="SRE"
               formData={formResponses["TAM"]}/>}
-              {activeTab === "BMAaS" && <BAMAAS_Details selectedTask={selectedTask} activeTab="BMAaS"
+              {activeTab === "BMAaS" && <BMAaS_Details selectedTask={selectedTask} activeTab="BMAaS"
               formData={formResponses["BMAaS"]} />}
               {activeTab === "DC" && (
                 <div>
@@ -121,7 +121,7 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
       </Row>
 
 
-      {["SRE", "TAM", "BMAaS", "DC"].includes(activeTab) ? <>
+      {(selectedTask.title === activeTab) ? <>
         <Row className="vh-50 d-flex flex-column p-3">
         {!formSubmitted && (
           <Card className="vh-50 d-flex flex-column p-0">

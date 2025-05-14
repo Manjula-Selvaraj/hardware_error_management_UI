@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardBody, Col, Row, Breadcrumb, CardHeader } from 'react-bootstrap';
 import data from './jsonData.json';
 import SampleData from './SampleData.json';
+import { act } from '@testing-library/react';
 
 const DC_Details = ({ selectedTask: initialSelectedTask, activeTab: selectedTab, formData }) => {
   const [selectedProject, setSelectedProject] = useState({});
