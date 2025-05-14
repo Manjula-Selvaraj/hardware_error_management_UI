@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Card, CardBody, CardHeader, Col, Form, FormGroup, Row } from 'react-bootstrap';
+import { Button, Card, CardBody, CardHeader, Col, Row } from 'react-bootstrap';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import './styles.css';
@@ -9,29 +9,31 @@ import TAM_Details from './TAB_Content/TAM_Details';
 import DC_Details from './TAB_Content/DC_Details';
 import BMAaS_Details from './TAB_Content/BMAaS_Details';
 import UserForm from './TAB_Content/UserForm';
+
 const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
   const [selectedTask, setSelectedTask] = useState(initialSelectedTask || {});
   const [tabs, setTabs] = useState(initialSelectedTask?.tabs || []);
   const [activeTab, setActiveTab] = useState('');
-  const [isClaimed, setisClaim] = useState(initialSelectedTask?.assignie || false);
+  const [isClaimed, setIsClaimed] = useState(initialSelectedTask?.assignie || false);
   const [formResponses, setFormResponses] = useState({});
-  const [showLeftColumn, setShowLeftColumn] = useState(false);
-  const [formSubmitted, setFormSubmitted] = useState(false);
+  const [formSubmittedStatus, setFormSubmittedStatus] = useState({}); // ✅ per-task submission tracking
 
   useEffect(() => {
     if (initialSelectedTask) {
       setSelectedTask(initialSelectedTask);
       setTabs(initialSelectedTask.tabs || []);
-      setisClaim(initialSelectedTask.assignie || false);
-      if (initialSelectedTask.tabs?.length > 0) {
-        setActiveTab(initialSelectedTask.tabs[0]);
+      setIsClaimed(initialSelectedTask.assignie || false);
+      if (initialSelectedTask.title && initialSelectedTask.tabs?.includes(initialSelectedTask.title)) {
+        setActiveTab(initialSelectedTask.title);
+      } else {
+        setActiveTab(initialSelectedTask.tabs[0] || '');
       }
     }
   }, [initialSelectedTask]);
 
   const handleClaimToggle = () => {
     const newClaimStatus = !isClaimed;
-    setisClaim(newClaimStatus);
+    setIsClaimed(newClaimStatus);
     if (onClaimChange && selectedTask.id) {
       onClaimChange(selectedTask.id, newClaimStatus);
     }
@@ -42,22 +44,21 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
       setActiveTab(newActiveTab);
     }
   };
-  const handleUserFormSubmit = (tab, data) => {
-    setFormResponses(prev => ({
-      ...prev,
-      [tab]: data
-    }));
-  };
-  const [sentData, setSentData] = useState({});
-  
-  
+
   const handleSubmit = (tab, formData) => {
     setFormResponses(prev => ({ ...prev, [tab]: formData }));
-    setFormSubmitted(true); 
+    if (selectedTask?.id) {
+      setFormSubmittedStatus(prev => ({
+        ...prev,
+        [selectedTask.id]: true
+      }));
+    }
   };
-  
+
+  const isFormSubmittedForTask = selectedTask?.id && formSubmittedStatus[selectedTask.id];
+
   return (
-    <Card className="vh-100 d-flex flex-column p-1 scrollable-container" >
+    <Card className="vh-100 d-flex flex-column p-1 scrollable-container">
       <Row>
         <Col md={10} className="mb-2 mt-3 text-start">
           <strong className="mx-4">{selectedTask.title}</strong>
@@ -91,11 +92,13 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
           </ToggleButtonGroup>
 
           <Card className="vh-50 d-flex flex-column p-1 mt-1 mb-1">
-            <div className="text-start"
+            <div
+              className="text-start"
               style={{
-                marginTop: ["SRE", "TAM", "BMAas", "DC"].includes(activeTab) ? "5px" : "25px",
-                marginLeft: ["SRE", "TAM", "BMAas", "DC"].includes(activeTab) ? "0px" : "25px"
-              }}>
+                marginTop: ["SRE", "TAM", "BMAaS", "DC"].includes(activeTab) ? "5px" : "25px",
+                marginLeft: ["SRE", "TAM", "BMAaS", "DC"].includes(activeTab) ? "0px" : "25px"
+              }}
+            >
               {activeTab === "Grafana" && <h4>This is the Grafana tab</h4>}
               {activeTab === "Pager" && <h4>This is the Pager tab</h4>}
               {activeTab === "SRE" && (
@@ -105,39 +108,50 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
                   formData={formResponses["SRE"]}
                 />
               )}
-              
-              {activeTab === "TAM" && <TAM_Details selectedTask={selectedTask}  activeTab="SRE"
-              formData={formResponses["TAM"]}/>}
-              {activeTab === "BMAaS" && <BMAaS_Details selectedTask={selectedTask} activeTab="BMAaS"
-              formData={formResponses["BMAaS"]} />}
+              {activeTab === "TAM" && (
+                <TAM_Details
+                  selectedTask={selectedTask}
+                  activeTab="TAM"
+                  formData={formResponses["TAM"]}
+                />
+              )}
+              {activeTab === "BMAaS" && (
+                <BMAaS_Details
+                  selectedTask={selectedTask}
+                  activeTab="BMAaS"
+                  formData={formResponses["BMAaS"]}
+                />
+              )}
               {activeTab === "DC" && (
-                <div>
-                  <DC_Details selectedTask={selectedTask} activeTab="DC" formData={formResponses["DC"]} />
-                </div>
-              )}              {activeTab === "Jira" && <JiraBoard selectedTask={selectedTask} />}
+                <DC_Details
+                  selectedTask={selectedTask}
+                  activeTab="DC"
+                  formData={formResponses["DC"]}
+                />
+              )}
+              {activeTab === "Jira" && <JiraBoard selectedTask={selectedTask} />}
             </div>
           </Card>
         </Card>
       </Row>
 
-
-      {(selectedTask.title === activeTab) ? <>
-        <Row className="vh-50 d-flex flex-column p-3">
-        {!formSubmitted && (
-          <Card className="vh-50 d-flex flex-column p-0">
-            <CardHeader style={{ color: "black", fontSize: "20px" }}>
-              <strong>User Form</strong>
-            </CardHeader>
-         
-              <UserForm onSubmit={handleSubmit} activeTab={activeTab} />
-              
-              
-              </Card>
-            )}
-        </Row>
-      </> : null}
-      
-
+      {selectedTask.title &&
+        ["SRE", "DC", "TAM", "BMAaS"].includes(selectedTask.title) &&
+        selectedTask.title === activeTab &&
+        !isFormSubmittedForTask && (
+          <Row className="vh-50 d-flex flex-column p-3">
+            <Card className="vh-50 d-flex flex-column p-0">
+              <CardHeader style={{ color: "black", fontSize: "20px" }}>
+                <strong>User Form</strong>
+              </CardHeader>
+              <UserForm
+                onSubmit={handleSubmit}
+                activeTab={activeTab}
+                selectedTask={selectedTask}
+              />
+            </Card>
+          </Row>
+        )}
     </Card>
   );
 };
