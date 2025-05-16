@@ -17,18 +17,18 @@ const InboxPage = () => {
     [
       { id: "10000", title: "DC", user: "Devi", date: "2024-02-26 22:19:37", assignie: true, tabs: ['Grafana', 'Pager', 'SRE', 'TAM', 'BMAaS', 'DC', 'Jira'], comments: [] },
       { id: "2", title: "Assignie", user: "Start", date: "2024-02-27 09:48:26", assignie: true, tabs: ['Grafana', 'Pager', 'SRE', 'TAM'], comments: [] },
-      { id: 3, title: "SRE", user: "opsTeam", date: "2024-03-01 12:45:00", assignie: false, tabs: ['SRE', 'TAM'], comments: [] },
-      { id: 4, title: "BMAaS", user: "adminUser", date: "2024-03-02 15:20:10", assignie: true, tabs: ['BMAaS', 'DC'], comments: [] },
-      { id: 5, title: "Pager", user: "backupTeam", date: "2024-03-03 08:30:55", assignie: false, tabs: ['Pager', 'Grafana'], comments: [] },
+      { id: "3", title: "SRE", user: "opsTeam", date: "2024-03-01 12:45:00", assignie: false, tabs: ['SRE', 'TAM'], comments: [] },
+      { id: "4", title: "BMAaS", user: "adminUser", date: "2024-03-02 15:20:10", assignie: true, tabs: ['BMAaS', 'DC'], comments: [] },
+      { id: "5", title: "Pager", user: "backupTeam", date: "2024-03-03 08:30:55", assignie: false, tabs: ['Pager', 'Grafana'], comments: [] },
       { id: "10001", title: "DC", user: "infraTeam", date: "2024-03-04 10:05:20", assignie: true, tabs: ['DC', 'Jira'], comments: [] },
-      { id: 7, title: "Grafana", user: "monitorBot", date: "2024-03-05 11:40:15", assignie: false, tabs: ['Grafana', 'SRE'], comments: [] },
-      { id: 8, title: "Network_Issue", user: "networkOps", date: "2024-03-06 14:22:48", assignie: true, tabs: ['Pager', 'DC'], comments: [] },
-      { id: 9, title: "Patch_Deployment", user: "updateBot", date: "2024-03-07 16:50:33", assignie: false, tabs: ['TAM', 'BMAaS'], comments: [] },
-      { id: 10, title: "Incident_900", user: "supportTeam", date: "2024-03-08 18:15:12", assignie: true, tabs: ['SRE', 'Pager', 'Jira'], comments: [] },
-      { id: 11, title: "Activity_12034", user: "fieldOps", date: "2024-03-09 09:30:45", assignie: false, tabs: ['Grafana', 'DC', 'Jira'], comments: [] },
-      { id: 12, title: "Audit_Logs", user: "auditTeam", date: "2024-03-10 07:55:00", assignie: true, tabs: ['TAM', 'Pager'], comments: [] },
-      { id: 13, title: "Upgrade_Check", user: "qaTeam", date: "2024-03-11 13:20:30", assignie: false, tabs: ['BMAaS', 'SRE'], comments: [] },
-      { id: 14, title: "Incident_Response", user: "incidentTeam", date: "2024-03-12 17:05:20", assignie: true, tabs: ['Grafana', 'Pager', 'SRE', 'TAM', 'BMAaS', 'DC', 'Jira'], comments: [] },
+      { id: "7", title: "Grafana", user: "monitorBot", date: "2024-03-05 11:40:15", assignie: false, tabs: ['Grafana', 'SRE'], comments: [] },
+      { id: "8", title: "Network_Issue", user: "networkOps", date: "2024-03-06 14:22:48", assignie: true, tabs: ['Pager', 'DC'], comments: [] },
+      { id: "9", title: "Patch_Deployment", user: "updateBot", date: "2024-03-07 16:50:33", assignie: false, tabs: ['TAM', 'BMAaS'], comments: [] },
+      { id: "10", title: "Incident_900", user: "supportTeam", date: "2024-03-08 18:15:12", assignie: true, tabs: ['SRE', 'Pager', 'Jira'], comments: [] },
+      { id: "11", title: "Activity_12034", user: "fieldOps", date: "2024-03-09 09:30:45", assignie: false, tabs: ['Grafana', 'DC', 'Jira'], comments: [] },
+      { id: "12", title: "Audit_Logs", user: "auditTeam", date: "2024-03-10 07:55:00", assignie: true, tabs: ['TAM', 'Pager'], comments: [] },
+      { id: "13", title: "Upgrade_Check", user: "qaTeam", date: "2024-03-11 13:20:30", assignie: false, tabs: ['BMAaS', 'SRE'], comments: [] },
+      { id: "14", title: "Incident_Response", user: "incidentTeam", date: "2024-03-12 17:05:20", assignie: true, tabs: ['Grafana', 'Pager', 'SRE', 'TAM', 'BMAaS', 'DC', 'Jira'], comments: [] },
     ]
   );
 
@@ -63,13 +63,11 @@ const InboxPage = () => {
 
   const [newJiraComments,setNewJiraComments] = useState([]);
   const onAddJiraComment = (updatedComments) => {
-    console.log(updatedComments,"commentsssssss");
     setNewJiraComments(updatedComments);
   };
 
   const [newComments,setNewComments] = useState([]);
   const onAddComment = (updatedComments) => {
-    console.log(updatedComments,"commentsssssss");
     setNewComments(updatedComments);
   };
 
@@ -173,7 +171,6 @@ const InboxPage = () => {
               JiraComments: newJiraComments || [],
               comments: newComments || []
             }
-            console.log(Payload);
             Swal.fire({
               title: "Submitted!",
               text: `Your Task has been submitted with Jira comments: ${Payload.JiraComments} and comments : ${Payload.comments}`,
