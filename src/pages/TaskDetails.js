@@ -10,7 +10,7 @@ import DC_Details from './TAB_Content/DC_Details';
 import BMAaS_Details from './TAB_Content/BMAaS_Details';
 import UserForm from './TAB_Content/UserForm';
 
-const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
+const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJiraComment, onAddComment }) => {
   const [selectedTask, setSelectedTask] = useState(initialSelectedTask || {});
   const [tabs, setTabs] = useState(initialSelectedTask?.tabs || []);
   const [activeTab, setActiveTab] = useState('');
@@ -56,6 +56,24 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
   };
 
   const isFormSubmittedForTask = selectedTask?.id && formSubmittedStatus[selectedTask.id];
+
+  const handleJiraCommentsUpdate = (updatedComments) => {
+    console.log("Updated comments from child:", updatedComments);
+    // You can store them in state or do anything else with them
+
+    // Notify parent
+    if (onAddJiraComment) {
+      onAddJiraComment(updatedComments);
+    }
+  };
+
+  const handleCommentsUpdate = (updatedComments) => {
+    console.log("Received comment from DC_Details:", updatedComments);
+    if (onAddComment) {
+      onAddComment(updatedComments);
+    }
+  };
+
 
   return (
     <Card className="vh-100 d-flex flex-column p-1 scrollable-container">
@@ -127,9 +145,11 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
                   selectedTask={selectedTask}
                   activeTab="DC"
                   formData={formResponses["DC"]}
+                  onCommentsUpdate={handleCommentsUpdate}
                 />
               )}
-              {activeTab === "Jira" && <JiraBoard selectedTask={selectedTask} />}
+              {activeTab === "Jira" &&
+                <JiraBoard selectedTask={selectedTask} onCommentsUpdate={handleJiraCommentsUpdate} />}
             </div>
           </Card>
         </Card>

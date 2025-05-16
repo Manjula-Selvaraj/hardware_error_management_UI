@@ -1,10 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { use, useCallback, useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../components/Header';
 import TaskDetails from './TaskDetails';
 import Swal from 'sweetalert2';
 import { Card } from 'react-bootstrap';
+import newStyled from '@emotion/styled';
 
 const InboxPage = () => {
   const [selectedTask, setSelectedTask] = useState(null);
@@ -15,11 +16,11 @@ const InboxPage = () => {
 
     [
       { id: "10000", title: "DC", user: "Devi", date: "2024-02-26 22:19:37", assignie: true, tabs: ['Grafana', 'Pager', 'SRE', 'TAM', 'BMAaS', 'DC', 'Jira'], comments: [] },
-      { id: 2, title: "Assignie", user: "Start", date: "2024-02-27 09:48:26", assignie: true, tabs: ['Grafana', 'Pager', 'SRE', 'TAM'], comments: [] },
+      { id: "2", title: "Assignie", user: "Start", date: "2024-02-27 09:48:26", assignie: true, tabs: ['Grafana', 'Pager', 'SRE', 'TAM'], comments: [] },
       { id: 3, title: "SRE", user: "opsTeam", date: "2024-03-01 12:45:00", assignie: false, tabs: ['SRE', 'TAM'], comments: [] },
       { id: 4, title: "BMAaS", user: "adminUser", date: "2024-03-02 15:20:10", assignie: true, tabs: ['BMAaS', 'DC'], comments: [] },
       { id: 5, title: "Pager", user: "backupTeam", date: "2024-03-03 08:30:55", assignie: false, tabs: ['Pager', 'Grafana'], comments: [] },
-      { id: 6, title: "DC", user: "infraTeam", date: "2024-03-04 10:05:20", assignie: true, tabs: ['DC', 'Jira'], comments: [] },
+      { id: "10001", title: "DC", user: "infraTeam", date: "2024-03-04 10:05:20", assignie: true, tabs: ['DC', 'Jira'], comments: [] },
       { id: 7, title: "Grafana", user: "monitorBot", date: "2024-03-05 11:40:15", assignie: false, tabs: ['Grafana', 'SRE'], comments: [] },
       { id: 8, title: "Network_Issue", user: "networkOps", date: "2024-03-06 14:22:48", assignie: true, tabs: ['Pager', 'DC'], comments: [] },
       { id: 9, title: "Patch_Deployment", user: "updateBot", date: "2024-03-07 16:50:33", assignie: false, tabs: ['TAM', 'BMAaS'], comments: [] },
@@ -59,6 +60,19 @@ const InboxPage = () => {
     }
 
   }, [selectedTask]);
+
+  const [newJiraComments,setNewJiraComments] = useState([]);
+  const onAddJiraComment = (updatedComments) => {
+    console.log(updatedComments,"commentsssssss");
+    setNewJiraComments(updatedComments);
+  };
+
+  const [newComments,setNewComments] = useState([]);
+  const onAddComment = (updatedComments) => {
+    console.log(updatedComments,"commentsssssss");
+    setNewComments(updatedComments);
+  };
+
 
 
   return (
@@ -141,7 +155,7 @@ const InboxPage = () => {
         {/* Right Panel */}
         <Card className="flex-grow-1 d-flex flex-column p-2">
           {selectedTask ? (
-            <TaskDetails selectedTask={selectedTask} onClaimChange={handleClaimChange} />
+            <TaskDetails selectedTask={selectedTask} onClaimChange={handleClaimChange} onAddJiraComment={onAddJiraComment} onAddComment={onAddComment}/>
           ) : (
             <p className="text-center mt-4">Select a task to view details</p>
           )}
@@ -153,9 +167,16 @@ const InboxPage = () => {
         <button
           className="floating-action-btn"
           onClick={() => {
+
+            let Payload ={
+              taskId: selectedTask.id,
+              JiraComments: newJiraComments || [],
+              comments: newComments || []
+            }
+            console.log(Payload);
             Swal.fire({
               title: "Submitted!",
-              text: "Your form has been submitted",
+              text: `Your Task has been submitted with Jira comments: ${Payload.JiraComments} and comments : ${Payload.comments}`,
               icon: "success",
               confirmButtonText: "OK"
             }).then((result) => {
