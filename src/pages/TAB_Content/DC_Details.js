@@ -4,7 +4,7 @@ import data from './jsonData.json';
 import SampleData from './SampleData.json';
 import { act } from '@testing-library/react';
 
-const DC_Details = ({ selectedTask: initialSelectedTask, activeTab: selectedTab, formData }) => {
+const DC_Details = ({ selectedTask: initialSelectedTask, activeTab: selectedTab, formData, onCommentsUpdate }) => {
   const [selectedProject, setSelectedProject] = useState({});
   const [suggestions, setSuggestions] = useState([]);
 
@@ -13,7 +13,12 @@ const DC_Details = ({ selectedTask: initialSelectedTask, activeTab: selectedTab,
     setSelectedProject(matchedProject);
     const filteredData = SampleData.find(item => item.fields.task === selectedTab)?.fields.suggestion.Suggestions || [];
     setSuggestions(filteredData);
-  }, [initialSelectedTask, selectedTab]);
+
+    
+    if (formData?.comments && onCommentsUpdate) {
+      onCommentsUpdate(formData.comments);
+    }
+  }, [initialSelectedTask, selectedTab, formData, onCommentsUpdate]);
 
   const isFormSubmitted = !!formData;
 
@@ -24,7 +29,7 @@ const DC_Details = ({ selectedTask: initialSelectedTask, activeTab: selectedTab,
         <Col md={6} className="d-flex mb-2 text-start">
           <Card className="mb-2 w-100">
             <CardBody className="d-flex flex-column">
-             
+
 
               <div>
                 <div>
@@ -36,7 +41,7 @@ const DC_Details = ({ selectedTask: initialSelectedTask, activeTab: selectedTab,
         </Col>
       )}
 
-     <Col md={(isFormSubmitted && formData.id === initialSelectedTask.id) ? 6 : 12} className="d-flex mb-2">
+      <Col md={(isFormSubmitted && formData.id === initialSelectedTask.id) ? 6 : 12} className="d-flex mb-2">
         <Card className="mb-2 w-100">
           <CardHeader className="boldtext">Suggestions</CardHeader>
           <CardBody className="d-flex flex-column">

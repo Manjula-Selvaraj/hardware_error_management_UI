@@ -7,7 +7,7 @@ import { Breadcrumb } from 'react-bootstrap';
 
 import jsonData from './jsonData.json';
 
-const JiraBoard = ({ selectedTask: initialSelectedTask }) => {
+const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
     const [selectedProject, setSelectedProject] = useState({});
     const [data, setData] = useState(jsonData);
     const [comment, setComment] = useState('');
@@ -98,6 +98,11 @@ const JiraBoard = ({ selectedTask: initialSelectedTask }) => {
         setComments(newComments);
         setComment('');
         updateData(newComments);
+
+        // Notify parent
+        if (onCommentsUpdate) {
+            onCommentsUpdate(newComments);
+        }
     };
 
 
