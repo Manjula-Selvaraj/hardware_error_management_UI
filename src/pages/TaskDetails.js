@@ -58,22 +58,57 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
   const isFormSubmittedForTask = selectedTask?.id && formSubmittedStatus[selectedTask.id];
 
   const handleJiraCommentsUpdate = (updatedComments) => {
-    console.log("Updated comments from child:", updatedComments);
-    // You can store them in state or do anything else with them
-
-    // Notify parent
     if (onAddJiraComment) {
       onAddJiraComment(updatedComments);
     }
   };
 
   const handleCommentsUpdate = (updatedComments) => {
-    console.log("Received comment from DC_Details:", updatedComments);
     if (onAddComment) {
       onAddComment(updatedComments);
     }
   };
 
+  // ✅ Tab component mapping
+  const tabComponentMap = {
+    Grafana: () => <h4>This is the Grafana tab</h4>,
+    Pager: () => <h4>This is the Pager tab</h4>,
+    SRE: () => (
+      <SRE_Details
+        selectedTask={selectedTask}
+        activeTab="SRE"
+        formData={formResponses["SRE"]}
+      />
+    ),
+    TAM: () => (
+      <TAM_Details
+        selectedTask={selectedTask}
+        activeTab="TAM"
+        formData={formResponses["TAM"]}
+      />
+    ),
+    BMAaS: () => (
+      <BMAaS_Details
+        selectedTask={selectedTask}
+        activeTab="BMAaS"
+        formData={formResponses["BMAaS"]}
+      />
+    ),
+    DC: () => (
+      <DC_Details
+        selectedTask={selectedTask}
+        activeTab="DC"
+        formData={formResponses["DC"]}
+        onCommentsUpdate={handleCommentsUpdate}
+      />
+    ),
+    Jira: () => (
+      <JiraBoard
+        selectedTask={selectedTask}
+        onCommentsUpdate={handleJiraCommentsUpdate}
+      />
+    )
+  };
 
   return (
     <Card className="vh-100 d-flex flex-column p-1 scrollable-container">
@@ -117,39 +152,12 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
                 marginLeft: ["SRE", "TAM", "BMAaS", "DC"].includes(activeTab) ? "0px" : "25px"
               }}
             >
-              {activeTab === "Grafana" && <h4>This is the Grafana tab</h4>}
-              {activeTab === "Pager" && <h4>This is the Pager tab</h4>}
-              {activeTab === "SRE" && (
-                <SRE_Details
-                  selectedTask={selectedTask}
-                  activeTab="SRE"
-                  formData={formResponses["SRE"]}
-                />
+              {tabComponentMap[activeTab] ? (
+                tabComponentMap[activeTab]()
+              ) : (
+                <p style={{ color: 'red' }}>Component not found for tab: {activeTab}</p>
               )}
-              {activeTab === "TAM" && (
-                <TAM_Details
-                  selectedTask={selectedTask}
-                  activeTab="TAM"
-                  formData={formResponses["TAM"]}
-                />
-              )}
-              {activeTab === "BMAaS" && (
-                <BMAaS_Details
-                  selectedTask={selectedTask}
-                  activeTab="BMAaS"
-                  formData={formResponses["BMAaS"]}
-                />
-              )}
-              {activeTab === "DC" && (
-                <DC_Details
-                  selectedTask={selectedTask}
-                  activeTab="DC"
-                  formData={formResponses["DC"]}
-                  onCommentsUpdate={handleCommentsUpdate}
-                />
-              )}
-              {activeTab === "Jira" &&
-                <JiraBoard selectedTask={selectedTask} onCommentsUpdate={handleJiraCommentsUpdate} />}
+
             </div>
           </Card>
         </Card>
