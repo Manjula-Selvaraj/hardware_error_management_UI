@@ -1,30 +1,39 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardBody, CardHeader, Col, Row } from 'react-bootstrap';
+import { Button, Card, CardBody, CardHeader, Col, Row } from 'react-bootstrap';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import './styles.css';
-import ProjectDetails from './ProjectDetails';
+import JiraBoard from './TAB_Content/JiraBoard';
+import SRE_Details from './TAB_Content/SRE_Details';
+import TAM_Details from './TAB_Content/TAM_Details';
+import DC_Details from './TAB_Content/DC_Details';
+import BMAaS_Details from './TAB_Content/BMAaS_Details';
+import UserForm from './TAB_Content/UserForm';
 
-const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
+const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJiraComment, onAddComment }) => {
   const [selectedTask, setSelectedTask] = useState(initialSelectedTask || {});
   const [tabs, setTabs] = useState(initialSelectedTask?.tabs || []);
   const [activeTab, setActiveTab] = useState('');
-  const [isClaimed, setisClaim] = useState(initialSelectedTask?.assignie || false);
+  const [isClaimed, setIsClaimed] = useState(initialSelectedTask?.assignie || false);
+  const [formResponses, setFormResponses] = useState({});
+  const [formSubmittedStatus, setFormSubmittedStatus] = useState({}); // ✅ per-task submission tracking
 
   useEffect(() => {
     if (initialSelectedTask) {
       setSelectedTask(initialSelectedTask);
       setTabs(initialSelectedTask.tabs || []);
-      setisClaim(initialSelectedTask.assignie || false);
-      if (initialSelectedTask.tabs?.length > 0) {
-        setActiveTab(initialSelectedTask.tabs[0]);
+      setIsClaimed(initialSelectedTask.assignie || false);
+      if (initialSelectedTask.title && initialSelectedTask.tabs?.includes(initialSelectedTask.title)) {
+        setActiveTab(initialSelectedTask.title);
+      } else {
+        setActiveTab(initialSelectedTask.tabs[0] || '');
       }
     }
   }, [initialSelectedTask]);
 
   const handleClaimToggle = () => {
     const newClaimStatus = !isClaimed;
-    setisClaim(newClaimStatus);
+    setIsClaimed(newClaimStatus);
     if (onClaimChange && selectedTask.id) {
       onClaimChange(selectedTask.id, newClaimStatus);
     }
@@ -36,8 +45,73 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
     }
   };
 
+  const handleSubmit = (tab, formData) => {
+    setFormResponses(prev => ({ ...prev, [tab]: formData }));
+    if (selectedTask?.id) {
+      setFormSubmittedStatus(prev => ({
+        ...prev,
+        [selectedTask.id]: true
+      }));
+    }
+  };
+
+  const isFormSubmittedForTask = selectedTask?.id && formSubmittedStatus[selectedTask.id];
+
+  const handleJiraCommentsUpdate = (updatedComments) => {
+    if (onAddJiraComment) {
+      onAddJiraComment(updatedComments);
+    }
+  };
+
+  const handleCommentsUpdate = (updatedComments) => {
+    if (onAddComment) {
+      onAddComment(updatedComments);
+    }
+  };
+
+  // ✅ Tab component mapping
+  const tabComponentMap = {
+    Grafana: () => <h4>This is the Grafana tab</h4>,
+    Pager: () => <h4>This is the Pager tab</h4>,
+    SRE: () => (
+      <SRE_Details
+        selectedTask={selectedTask}
+        activeTab="SRE"
+        formData={formResponses["SRE"]}
+      />
+    ),
+    TAM: () => (
+      <TAM_Details
+        selectedTask={selectedTask}
+        activeTab="TAM"
+        formData={formResponses["TAM"]}
+      />
+    ),
+    BMAaS: () => (
+      <BMAaS_Details
+        selectedTask={selectedTask}
+        activeTab="BMAaS"
+        formData={formResponses["BMAaS"]}
+      />
+    ),
+    DC: () => (
+      <DC_Details
+        selectedTask={selectedTask}
+        activeTab="DC"
+        formData={formResponses["DC"]}
+        onCommentsUpdate={handleCommentsUpdate}
+      />
+    ),
+    Jira: () => (
+      <JiraBoard
+        selectedTask={selectedTask}
+        onCommentsUpdate={handleJiraCommentsUpdate}
+      />
+    )
+  };
+
   return (
-    <Card className="vh-100 d-flex flex-column p-1 scrollable-container" >
+    <Card className="vh-100 d-flex flex-column p-1 scrollable-container">
       <Row>
         <Col md={10} className="mb-2 mt-3 text-start">
           <strong className="mx-4">{selectedTask.title}</strong>
@@ -71,29 +145,41 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange }) => {
           </ToggleButtonGroup>
 
           <Card className="vh-50 d-flex flex-column p-1 mt-1 mb-1">
-            <div className="text-start margin">
-              {activeTab === "Grafana" && <h4>This is the Grafana tab</h4>}
-              {activeTab === "Pager" && <h4>This is the Pager tab</h4>}
-              {activeTab === "SRE" && <h4>This is the SRE tab</h4>}
-              {activeTab === "TAM" && <h4>This is the TAM tab</h4>}
-              {activeTab === "BMAaS" && <h4>This is the BMAAS tab</h4>}
-              {activeTab === "DC" && <h4>This is the DC tab</h4>}
-              {activeTab === "Jira" && <ProjectDetails selectedTask={selectedTask} />}
+            <div
+              className="text-start"
+              style={{
+                marginTop: ["SRE", "TAM", "BMAaS", "DC"].includes(activeTab) ? "5px" : "25px",
+                marginLeft: ["SRE", "TAM", "BMAaS", "DC"].includes(activeTab) ? "0px" : "25px"
+              }}
+            >
+              {tabComponentMap[activeTab] ? (
+                tabComponentMap[activeTab]()
+              ) : (
+                <p style={{ color: 'red' }}>Component not found for tab: {activeTab}</p>
+              )}
+
             </div>
           </Card>
         </Card>
       </Row>
 
-      <Row className="vh-50 d-flex flex-column p-3">
-        <Card className="vh-50 d-flex flex-column p-0">
-          <CardHeader style={{ color: "black", fontSize: "20px" }}>
-            <strong>User Form</strong>
-          </CardHeader>
-          <CardBody>
-            {/* User Form Content */}
-          </CardBody>
-        </Card>
-      </Row>
+      {selectedTask.title &&
+        ["SRE", "DC", "TAM", "BMAaS"].includes(selectedTask.title) &&
+        selectedTask.title === activeTab &&
+        !isFormSubmittedForTask && (
+          <Row className="vh-50 d-flex flex-column p-3">
+            <Card className="vh-50 d-flex flex-column p-0">
+              <CardHeader style={{ color: "black", fontSize: "20px" }}>
+                <strong>User Form</strong>
+              </CardHeader>
+              <UserForm
+                onSubmit={handleSubmit}
+                activeTab={activeTab}
+                selectedTask={selectedTask}
+              />
+            </Card>
+          </Row>
+        )}
     </Card>
   );
 };

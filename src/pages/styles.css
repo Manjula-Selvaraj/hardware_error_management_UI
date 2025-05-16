@@ -1,9 +1,4 @@
 /* TaskDetails && Inbox*/
-.margin{
-    margin-top: 25px;
-    margin-left: 25px;
-  }
-  
   
   .boldtext {
     font-weight: bold !important;
@@ -214,3 +209,10 @@
     background: transparent;
   }
   
+
+  @media (min-width: 768px) {
+    .col-md-1 {
+        flex: 0 0 auto;
+        width: 1.33333333% !important;
+    }
+}
