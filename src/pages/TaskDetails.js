@@ -9,6 +9,7 @@ import TAM_Details from './TAB_Content/TAM_Details';
 import DC_Details from './TAB_Content/DC_Details';
 import BMAaS_Details from './TAB_Content/BMAaS_Details';
 import UserForm from './TAB_Content/UserForm';
+import { AuthContext } from '../AuthProvider';
 
 const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJiraComment, onAddComment }) => {
   const [selectedTask, setSelectedTask] = useState(initialSelectedTask || {});
@@ -17,6 +18,7 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
   const [isClaimed, setIsClaimed] = useState(initialSelectedTask?.assignie || false);
   const [formResponses, setFormResponses] = useState({});
   const [formSubmittedStatus, setFormSubmittedStatus] = useState({}); // ✅ per-task submission tracking
+//  const [isClaimed, setisClaim] = useState(initialSelectedTask?.assignee || false);
 
   useEffect(() => {
     if (initialSelectedTask) {
@@ -114,8 +116,8 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
     <Card className="vh-100 d-flex flex-column p-1 scrollable-container">
       <Row>
         <Col md={10} className="mb-2 mt-3 text-start">
-          <strong className="mx-4">{selectedTask.title}</strong>
-          <strong>{selectedTask.date}</strong>
+          <strong className="mx-4">{selectedTask.name}</strong>
+          <strong>{selectedTask.creationDate}</strong>
         </Col>
         <Col md={2} className="mb-2 mt-2">
           <button
