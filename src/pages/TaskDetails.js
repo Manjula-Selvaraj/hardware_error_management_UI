@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Button, Card, CardBody, CardHeader, Col, Row } from 'react-bootstrap';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -10,9 +10,14 @@ import DC_Details from './TAB_Content/DC_Details';
 import BMAaS_Details from './TAB_Content/BMAaS_Details';
 import UserForm from './TAB_Content/UserForm';
 import Swal from 'sweetalert2';
-import axios from 'axios';
+import Spinner from 'react-bootstrap/Spinner';
+import { AuthContext } from '../AuthProvider';
+
 
 const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJiraComment, onAddComment }) => {
+
+  const { keycloak, setIsAuthenticated } = useContext(AuthContext);
+
   const [selectedTask, setSelectedTask] = useState(initialSelectedTask || {});
   const [tabs, setTabs] = useState(initialSelectedTask?.tabs || []);
   const [activeTab, setActiveTab] = useState('');
@@ -20,6 +25,7 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
   const [formResponses, setFormResponses] = useState({});
   const [formSubmittedStatus, setFormSubmittedStatus] = useState({}); // ✅ per-task submission tracking
 
+  const [loading, setLoading] = useState(false);
 
 
   useEffect(() => {
@@ -37,51 +43,82 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
 
 
 
-  const handleClaimToggle = () => {
+  const handleClaimToggle = async () => {
     const newClaimStatus = !isClaimed;
+    const token = keycloak?.token;
 
-    if (!newClaimStatus) {
-      // Unclaim task
-      axios
-        .delete(`http://localhost:8080/v2/user-tasks/${selectedTask.id}/assignee`)
-        .then((res) => {
+    if (!selectedTask?.id) return;
+
+    if (!token) {
+      Swal.fire({
+        title: "Error!",
+        text: "Authentication token is missing. Please login again.",
+        icon: "error",
+        confirmButtonText: "OK"
+      });
+    } else {
+
+      const headers = {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      };
+
+      setLoading(true);
+
+      try {
+        let response;
+        if (!newClaimStatus) {
+          // UNCLAIM TASK
+          response = await fetch(`http://localhost:8080/v2/user-tasks/${selectedTask.id}/assignee`, {
+            method: "DELETE",
+            headers
+          });
+
+          if (!response.ok) throw new Error("Failed to unclaim the task");
+
           Swal.fire({
             title: "Success!",
             text: "This Task has been Unclaimed",
             icon: "success",
             confirmButtonText: "OK"
           }).then((result) => {
-            if (result.isConfirmed && selectedTask.id) {
-              setIsClaimed(newClaimStatus); // ✅ Set state only after success
+            if (result.isConfirmed) {
+              setIsClaimed(newClaimStatus);
               onClaimChange(selectedTask.id, newClaimStatus);
             }
           });
-        })
-        .catch((err) => {
-          Swal.fire("Error", "Failed to unclaim the task", "error");
-        });
-    } else {
-      // Claim task
-      axios
-        .post(`/v2/user-tasks/${selectedTask.id}/assignment`)
-        .then((res) => {
+
+        } else {
+          // CLAIM TASK
+          response = await fetch(`http://localhost:8080/v2/user-tasks/${selectedTask.id}/assignment`, {
+            method: "POST",
+            headers
+          });
+
+          if (!response.ok) throw new Error("Failed to claim the task");
+
           Swal.fire({
             title: "Success!",
             text: "This Task has been Claimed",
             icon: "success",
             confirmButtonText: "OK"
           }).then((result) => {
-            if (result.isConfirmed && selectedTask.id) {
-              setIsClaimed(newClaimStatus); // ✅ Set state only after success
+            if (result.isConfirmed) {
+              setIsClaimed(newClaimStatus);
               onClaimChange(selectedTask.id, newClaimStatus);
             }
           });
-        })
-        .catch((err) => {
-          Swal.fire("Error", "Failed to claim the task", "error");
-        });
+        }
+
+      } catch (error) {
+        Swal.fire("Error", newClaimStatus ? "Failed to Claim the task" : "Failed to Unclaim the task", "Something went wrong Please try again later.");
+      } finally {
+        setLoading(false);
+      }
     }
   };
+
+
 
 
   const handleChange = (event, newActiveTab) => {
@@ -114,7 +151,7 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
     }
   };
 
-  // ✅ Tab component mapping
+  //  Tab component mapping
   const tabComponentMap = {
     Grafana: () => <h4>This is the Grafana tab</h4>,
     Pager: () => <h4>This is the Pager tab</h4>,
@@ -168,7 +205,14 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
             onClick={handleClaimToggle}
             aria-label={isClaimed ? "Unclaim Task" : "Claim Task"}
           >
-            {isClaimed ? 'Unclaim' : 'Claim'}
+            {loading ? (
+              <>
+                <Spinner animation="border" size="sm" role="status" className="me-2" />
+                Loading...
+              </>
+            ) : (
+              isClaimed ? 'Unclaim' : 'Claim'
+            )}
           </button>
         </Col>
       </Row>

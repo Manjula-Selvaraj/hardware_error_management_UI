@@ -1,4 +1,4 @@
-import React, { use, useCallback, useEffect, useState } from 'react';
+import React, { use, useCallback, useContext, useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../components/Header';
@@ -6,9 +6,14 @@ import TaskDetails from './TaskDetails';
 import Swal from 'sweetalert2';
 import { Card } from 'react-bootstrap';
 import newStyled from '@emotion/styled';
-import axios from 'axios';
+import { AuthContext } from '../AuthProvider';
+import Spinner from 'react-bootstrap/Spinner';
 
 const InboxPage = () => {
+
+  const { keycloak, setIsAuthenticated } = useContext(AuthContext);
+
+  const [sending, setSending] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -71,7 +76,6 @@ const InboxPage = () => {
   const onAddComment = (updatedComments) => {
     setNewComments(updatedComments);
   };
-
 
 
   return (
@@ -169,54 +173,76 @@ const InboxPage = () => {
             if (!selectedTask?.id) return;
 
             const Payload = {
-              action: "complete", // optional, but adding it explicitly
+              action: "complete",
               JiraComments: newJiraComments || [],
               comments: newComments || []
             };
 
-            try {
-              await axios.post(
-                `http://localhost:8080/v2/user-tasks/${selectedTask?.id}/completion`,
-                Payload
-              ).then((response) => {
+            setSending(true);
 
-                // Show success Swal if request succeeds
-                Swal.fire({
-                  title: "Submitted!",
-                  text: `Your Task has been submitted Sucessfully`,
-                  icon: "success",
-                  confirmButtonText: "OK"
-                }).then((result) => {
-                  if (result.isConfirmed && selectedTask) {
-                    setTasks(prevTasks => {
-                      const updatedTasks = prevTasks.filter(task => task.id !== selectedTask.id);
-                      const updatedTotalPages = Math.ceil(updatedTasks.length / tasksPerPage);
-                      if (currentPage > updatedTotalPages) {
-                        setCurrentPage(updatedTotalPages > 0 ? updatedTotalPages : 1);
-                      }
-                      return updatedTasks;
-                    });
-                    setSelectedTask(null);
-                  }
-                });
-              })
+            try {
+              const token = keycloak.token; // Adjust if you use another storage
+
+              const response = await fetch(`http://localhost:8080/v2/user-tasks/${selectedTask?.id}/completion`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(Payload)
+              });
+
+              if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Something went wrong while submitting the task.");
+              }
+
+              // If response is OK
+              Swal.fire({
+                title: "Submitted!",
+                text: "Your Task has been submitted Successfully",
+                icon: "success",
+                confirmButtonText: "OK"
+              }).then((result) => {
+                if (result.isConfirmed && selectedTask) {
+                  setTasks(prevTasks => {
+                    const updatedTasks = prevTasks.filter(task => task.id !== selectedTask.id);
+                    const updatedTotalPages = Math.ceil(updatedTasks.length / tasksPerPage);
+                    if (currentPage > updatedTotalPages) {
+                      setCurrentPage(updatedTotalPages > 0 ? updatedTotalPages : 1);
+                    }
+                    return updatedTasks;
+                  });
+                  setSelectedTask(null);
+                }
+              });
+
             } catch (error) {
-              // Handle error
               Swal.fire({
                 title: "Error!",
-                text: error.response?.data?.message || "Something went wrong while submitting the task.",
+                text: error.message || "Something went wrong while submitting the task.",
                 icon: "error",
                 confirmButtonText: "OK"
               });
+            }finally {
+              setSending(false);
             }
           }}
+
           title="Complete Task"
           aria-label="Complete Task"
         >
-          Complete
+          {sending ? (
+              <>
+                <Spinner animation="border" size="sm" role="status" className="me-2" />
+                submitting...
+              </>
+            ) : "Complete"
+          }
         </button>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 };
 
