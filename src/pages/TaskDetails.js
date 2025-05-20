@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button, Card, CardBody, CardHeader, Col, Row } from 'react-bootstrap';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
@@ -9,6 +9,8 @@ import TAM_Details from './TAB_Content/TAM_Details';
 import DC_Details from './TAB_Content/DC_Details';
 import BMAaS_Details from './TAB_Content/BMAaS_Details';
 import UserForm from './TAB_Content/UserForm';
+import Swal from 'sweetalert2';
+import axios from 'axios';
 
 const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJiraComment, onAddComment }) => {
   const [selectedTask, setSelectedTask] = useState(initialSelectedTask || {});
@@ -17,6 +19,8 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
   const [isClaimed, setIsClaimed] = useState(initialSelectedTask?.assignie || false);
   const [formResponses, setFormResponses] = useState({});
   const [formSubmittedStatus, setFormSubmittedStatus] = useState({}); // ✅ per-task submission tracking
+
+
 
   useEffect(() => {
     if (initialSelectedTask) {
@@ -31,13 +35,54 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
     }
   }, [initialSelectedTask]);
 
+
+
   const handleClaimToggle = () => {
     const newClaimStatus = !isClaimed;
-    setIsClaimed(newClaimStatus);
-    if (onClaimChange && selectedTask.id) {
-      onClaimChange(selectedTask.id, newClaimStatus);
+
+    if (!newClaimStatus) {
+      // Unclaim task
+      axios
+        .delete(`http://localhost:8080/v2/user-tasks/${selectedTask.id}/assignee`)
+        .then((res) => {
+          Swal.fire({
+            title: "Success!",
+            text: "This Task has been Unclaimed",
+            icon: "success",
+            confirmButtonText: "OK"
+          }).then((result) => {
+            if (result.isConfirmed && selectedTask.id) {
+              setIsClaimed(newClaimStatus); // ✅ Set state only after success
+              onClaimChange(selectedTask.id, newClaimStatus);
+            }
+          });
+        })
+        .catch((err) => {
+          Swal.fire("Error", "Failed to unclaim the task", "error");
+        });
+    } else {
+      // Claim task
+      axios
+        .post(`/v2/user-tasks/${selectedTask.id}/assignment`)
+        .then((res) => {
+          Swal.fire({
+            title: "Success!",
+            text: "This Task has been Claimed",
+            icon: "success",
+            confirmButtonText: "OK"
+          }).then((result) => {
+            if (result.isConfirmed && selectedTask.id) {
+              setIsClaimed(newClaimStatus); // ✅ Set state only after success
+              onClaimChange(selectedTask.id, newClaimStatus);
+            }
+          });
+        })
+        .catch((err) => {
+          Swal.fire("Error", "Failed to claim the task", "error");
+        });
     }
   };
+
 
   const handleChange = (event, newActiveTab) => {
     if (newActiveTab !== null) {

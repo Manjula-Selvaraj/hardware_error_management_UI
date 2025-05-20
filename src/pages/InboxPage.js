@@ -6,6 +6,7 @@ import TaskDetails from './TaskDetails';
 import Swal from 'sweetalert2';
 import { Card } from 'react-bootstrap';
 import newStyled from '@emotion/styled';
+import axios from 'axios';
 
 const InboxPage = () => {
   const [selectedTask, setSelectedTask] = useState(null);
@@ -61,12 +62,12 @@ const InboxPage = () => {
 
   }, [selectedTask]);
 
-  const [newJiraComments,setNewJiraComments] = useState([]);
+  const [newJiraComments, setNewJiraComments] = useState([]);
   const onAddJiraComment = (updatedComments) => {
     setNewJiraComments(updatedComments);
   };
 
-  const [newComments,setNewComments] = useState([]);
+  const [newComments, setNewComments] = useState([]);
   const onAddComment = (updatedComments) => {
     setNewComments(updatedComments);
   };
@@ -153,7 +154,7 @@ const InboxPage = () => {
         {/* Right Panel */}
         <Card className="flex-grow-1 d-flex flex-column p-2">
           {selectedTask ? (
-            <TaskDetails selectedTask={selectedTask} onClaimChange={handleClaimChange} onAddJiraComment={onAddJiraComment} onAddComment={onAddComment}/>
+            <TaskDetails selectedTask={selectedTask} onClaimChange={handleClaimChange} onAddJiraComment={onAddJiraComment} onAddComment={onAddComment} />
           ) : (
             <p className="text-center mt-4">Select a task to view details</p>
           )}
@@ -164,32 +165,50 @@ const InboxPage = () => {
       {selectedTask && selectedTask.assignie && (
         <button
           className="floating-action-btn"
-          onClick={() => {
+          onClick={async () => {
+            if (!selectedTask?.id) return;
 
-            let Payload ={
-              taskId: selectedTask.id,
+            const Payload = {
+              action: "complete", // optional, but adding it explicitly
               JiraComments: newJiraComments || [],
               comments: newComments || []
-            }
-            Swal.fire({
-              title: "Submitted!",
-              text: `Your Task has been submitted with Jira comments: ${Payload.JiraComments} and comments : ${Payload.comments}`,
-              icon: "success",
-              confirmButtonText: "OK"
-            }).then((result) => {
-              if (result.isConfirmed && selectedTask) {
-                setTasks(prevTasks => {
-                  const updatedTasks = prevTasks.filter(task => task.id !== selectedTask.id);
-                  // Adjust pagination if current page becomes empty after deletion
-                  const updatedTotalPages = Math.ceil(updatedTasks.length / tasksPerPage);
-                  if (currentPage > updatedTotalPages) {
-                    setCurrentPage(updatedTotalPages > 0 ? updatedTotalPages : 1);
+            };
+
+            try {
+              await axios.post(
+                `http://localhost:8080/v2/user-tasks/${selectedTask?.id}/completion`,
+                Payload
+              ).then((response) => {
+
+                // Show success Swal if request succeeds
+                Swal.fire({
+                  title: "Submitted!",
+                  text: `Your Task has been submitted Sucessfully`,
+                  icon: "success",
+                  confirmButtonText: "OK"
+                }).then((result) => {
+                  if (result.isConfirmed && selectedTask) {
+                    setTasks(prevTasks => {
+                      const updatedTasks = prevTasks.filter(task => task.id !== selectedTask.id);
+                      const updatedTotalPages = Math.ceil(updatedTasks.length / tasksPerPage);
+                      if (currentPage > updatedTotalPages) {
+                        setCurrentPage(updatedTotalPages > 0 ? updatedTotalPages : 1);
+                      }
+                      return updatedTasks;
+                    });
+                    setSelectedTask(null);
                   }
-                  return updatedTasks;
                 });
-                setSelectedTask(null); // Clear selection
-              }
-            });
+              })
+            } catch (error) {
+              // Handle error
+              Swal.fire({
+                title: "Error!",
+                text: error.response?.data?.message || "Something went wrong while submitting the task.",
+                icon: "error",
+                confirmButtonText: "OK"
+              });
+            }
           }}
           title="Complete Task"
           aria-label="Complete Task"
