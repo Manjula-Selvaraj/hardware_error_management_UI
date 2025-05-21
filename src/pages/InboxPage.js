@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { use, useCallback, useContext, useEffect, useState } from 'react';
+=======
+import React, { useCallback, useEffect, useState, useContext } from 'react';
+>>>>>>> 0628f61 (merge conflicts)
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../components/Header';
@@ -37,7 +41,43 @@ const InboxPage = () => {
       { id: "14", title: "Incident_Response", user: "incidentTeam", date: "2024-03-12 17:05:20", assignie: true, tabs: ['Grafana', 'Pager', 'SRE', 'TAM', 'BMAaS', 'DC', 'Jira'], comments: [] },
     ]
   );
+useEffect(() => {
+  const fetchTasks = async () => {
+    try {
+      await keycloak.updateToken(60); 
+      const token = keycloak.token;
 
+      const response = await fetch('http://localhost:7259/api/tasklist/v1/tasks/search', {
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin':'*'
+        },
+        body: JSON.stringify({
+          state: "CREATED",
+          assignee: keycloak.tokenParsed.preferred_username,
+          candidateGroups: keycloak.tokenParsed.groups
+        })
+      });
+
+      const data = await response.json();
+      console.log('#####################');
+      console.log(data);
+      console.log(keycloak.tokenParsed.preferred_username);
+
+      setTasks(data);
+    } catch (error) {
+      console.error('Failed to fetch tasks:', error);
+    }
+  };
+  
+  
+
+  if (keycloak.authenticated) {
+    fetchTasks();
+  }
+}, [keycloak]);
   const tasksPerPage = 6;
   const totalPages = Math.ceil(tasks.length / tasksPerPage);
 
@@ -109,11 +149,11 @@ const InboxPage = () => {
                     className="p-2 mb-2 border rounded"
                     style={{ backgroundColor: selectedTask?.id === task.id ? "#99def3" : "#fff", cursor: "pointer" }}
                     onClick={() => setSelectedTask(task)}
-                    aria-label={`Select task ${task.title}`}
+                    aria-label={`Select task ${task.name}`}
                   >
-                    <div className='text-start'><strong>{task.title}</strong></div>
-                    <div className="text-muted small text-start">{task.user}</div>
-                    <div className="text-muted small text-start">{task.date}</div>
+                    <div className='text-start'><strong>{task.name}</strong></div>
+                    <div className="text-muted small text-start">{task.assignee}</div>
+                    <div className="text-muted small text-start">{task.creationDate}</div>
                   </div>
                 ))
               ) : (
