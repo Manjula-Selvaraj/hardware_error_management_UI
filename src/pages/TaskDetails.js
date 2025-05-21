@@ -25,6 +25,9 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
       setSelectedTask(initialSelectedTask);
       setTabs(initialSelectedTask.tabs || []);
       setIsClaimed(initialSelectedTask.assignie || false);
+      console.log('inisde taskdetails');
+      console.log(initialSelectedTask);
+      initialSelectedTask.tabs=['SRE'];
       if (initialSelectedTask.title && initialSelectedTask.tabs?.includes(initialSelectedTask.title)) {
         setActiveTab(initialSelectedTask.title);
       } else {
