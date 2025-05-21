@@ -39,7 +39,8 @@ const Header = () =>
           <FaUserCircle size={24} />
         </Dropdown.Toggle>
         <Dropdown.Menu>
-          <Dropdown.Header>{userInfo.name}</Dropdown.Header>
+          {/* <Dropdown.Header>{userInfo.name}</Dropdown.Header> */}
+          <Dropdown.Header>{userInfo}</Dropdown.Header>
           <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>

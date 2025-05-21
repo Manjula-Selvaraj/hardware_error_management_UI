@@ -1,4 +1,4 @@
-import React, { use, useCallback, useEffect, useState } from 'react';
+import React, { use, useCallback, useContext, useEffect, useState } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../components/Header';
@@ -6,8 +6,14 @@ import TaskDetails from './TaskDetails';
 import Swal from 'sweetalert2';
 import { Card } from 'react-bootstrap';
 import newStyled from '@emotion/styled';
+import { AuthContext } from '../AuthProvider';
+import Spinner from 'react-bootstrap/Spinner';
 
 const InboxPage = () => {
+
+  const { keycloak, setIsAuthenticated } = useContext(AuthContext);
+
+  const [sending, setSending] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
@@ -61,16 +67,15 @@ const InboxPage = () => {
 
   }, [selectedTask]);
 
-  const [newJiraComments,setNewJiraComments] = useState([]);
+  const [newJiraComments, setNewJiraComments] = useState([]);
   const onAddJiraComment = (updatedComments) => {
     setNewJiraComments(updatedComments);
   };
 
-  const [newComments,setNewComments] = useState([]);
+  const [newComments, setNewComments] = useState([]);
   const onAddComment = (updatedComments) => {
     setNewComments(updatedComments);
   };
-
 
 
   return (
@@ -153,7 +158,7 @@ const InboxPage = () => {
         {/* Right Panel */}
         <Card className="flex-grow-1 d-flex flex-column p-2">
           {selectedTask ? (
-            <TaskDetails selectedTask={selectedTask} onClaimChange={handleClaimChange} onAddJiraComment={onAddJiraComment} onAddComment={onAddComment}/>
+            <TaskDetails selectedTask={selectedTask} onClaimChange={handleClaimChange} onAddJiraComment={onAddJiraComment} onAddComment={onAddComment} />
           ) : (
             <p className="text-center mt-4">Select a task to view details</p>
           )}
@@ -164,40 +169,80 @@ const InboxPage = () => {
       {selectedTask && selectedTask.assignie && (
         <button
           className="floating-action-btn"
-          onClick={() => {
+          onClick={async () => {
+            if (!selectedTask?.id) return;
 
-            let Payload ={
-              taskId: selectedTask.id,
+            const Payload = {
+              action: "complete",
               JiraComments: newJiraComments || [],
               comments: newComments || []
-            }
-            Swal.fire({
-              title: "Submitted!",
-              text: `Your Task has been submitted with Jira comments: ${Payload.JiraComments} and comments : ${Payload.comments}`,
-              icon: "success",
-              confirmButtonText: "OK"
-            }).then((result) => {
-              if (result.isConfirmed && selectedTask) {
-                setTasks(prevTasks => {
-                  const updatedTasks = prevTasks.filter(task => task.id !== selectedTask.id);
-                  // Adjust pagination if current page becomes empty after deletion
-                  const updatedTotalPages = Math.ceil(updatedTasks.length / tasksPerPage);
-                  if (currentPage > updatedTotalPages) {
-                    setCurrentPage(updatedTotalPages > 0 ? updatedTotalPages : 1);
-                  }
-                  return updatedTasks;
-                });
-                setSelectedTask(null); // Clear selection
+            };
+
+            setSending(true);
+
+            try {
+              const token = keycloak.token; // Adjust if you use another storage
+
+              const response = await fetch(`http://localhost:8080/v2/user-tasks/${selectedTask?.id}/completion`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(Payload)
+              });
+
+              if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.message || "Something went wrong while submitting the task.");
               }
-            });
+
+              // If response is OK
+              Swal.fire({
+                title: "Submitted!",
+                text: "Your Task has been submitted Successfully",
+                icon: "success",
+                confirmButtonText: "OK"
+              }).then((result) => {
+                if (result.isConfirmed && selectedTask) {
+                  setTasks(prevTasks => {
+                    const updatedTasks = prevTasks.filter(task => task.id !== selectedTask.id);
+                    const updatedTotalPages = Math.ceil(updatedTasks.length / tasksPerPage);
+                    if (currentPage > updatedTotalPages) {
+                      setCurrentPage(updatedTotalPages > 0 ? updatedTotalPages : 1);
+                    }
+                    return updatedTasks;
+                  });
+                  setSelectedTask(null);
+                }
+              });
+
+            } catch (error) {
+              Swal.fire({
+                title: "Error!",
+                text: error.message || "Something went wrong while submitting the task.",
+                icon: "error",
+                confirmButtonText: "OK"
+              });
+            }finally {
+              setSending(false);
+            }
           }}
+
           title="Complete Task"
           aria-label="Complete Task"
         >
-          Complete
+          {sending ? (
+              <>
+                <Spinner animation="border" size="sm" role="status" className="me-2" />
+                submitting...
+              </>
+            ) : "Complete"
+          }
         </button>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 };
 
