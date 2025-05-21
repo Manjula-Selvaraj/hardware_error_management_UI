@@ -1,12 +1,4 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-import React, { use, useCallback, useContext, useEffect, useState } from 'react';
-=======
 import React, { useCallback, useEffect, useState, useContext } from 'react';
->>>>>>> 0628f61 (merge conflicts)
-=======
-import React, { useCallback, useEffect, useState, useContext } from 'react';
->>>>>>> 06e15994ed96c00a5466a231c1f23df5eb9540be
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../components/Header';
