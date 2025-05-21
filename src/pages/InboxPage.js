@@ -41,6 +41,38 @@ const InboxPage = () => {
       { id: "14", title: "Incident_Response", user: "incidentTeam", date: "2024-03-12 17:05:20", assignie: true, tabs: ['Grafana', 'Pager', 'SRE', 'TAM', 'BMAaS', 'DC', 'Jira'], comments: [] },
     ]
   );
+  const handleTaskSelect = async (task) => {
+  setSelectedTask(null); // Reset first to force re-render
+
+  try {
+    await keycloak.updateToken(60);
+    const token = keycloak.token;
+
+    const response = await fetch(`http://localhost:7259/api/tasklist/v1/tasks/${task.id}/variables/search`, {
+      method: "POST",
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch variables");
+    }
+
+    const variables = await response.json();
+    console.log(variables);
+    setSelectedTask({
+      ...task,
+      variables // inject variables into the task object
+    });
+
+  } catch (error) {
+    console.error("Failed to load task variables:", error);
+  }
+};
+
 useEffect(() => {
   const fetchTasks = async () => {
     try {
@@ -83,7 +115,8 @@ useEffect(() => {
 
   const indexOfLastTask = currentPage * tasksPerPage;
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;
-  const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask);
+  const currentTasks = tasks ? tasks.slice(indexOfFirstTask, indexOfLastTask) : [];
+
 
   const iconColor = isHovered ? "rgb(250, 252, 254)" : "rgb(68, 84, 111)";
 
@@ -148,7 +181,7 @@ useEffect(() => {
                     key={task.id}
                     className="p-2 mb-2 border rounded"
                     style={{ backgroundColor: selectedTask?.id === task.id ? "#99def3" : "#fff", cursor: "pointer" }}
-                    onClick={() => setSelectedTask(task)}
+                    onClick={() => handleTaskSelect(task)}
                     aria-label={`Select task ${task.name}`}
                   >
                     <div className='text-start'><strong>{task.name}</strong></div>
