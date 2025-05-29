@@ -79,8 +79,7 @@ useEffect(() => {
         method: "POST",
         headers: {
           'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-          'Access-Control-Allow-Origin':'*'
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
           state: "CREATED",
@@ -126,12 +125,12 @@ useEffect(() => {
   const handleClaimChange = useCallback((taskId, newClaimStatus) => {
     setTasks(prevTasks =>
       prevTasks.map(task =>
-        task.id === taskId ? { ...task, assignie: newClaimStatus } : task
+        task.id === taskId ? { ...task, assignee: newClaimStatus } : task
       )
     );
     // Also update the selectedTask if it's the one being modified
     if (selectedTask && selectedTask.id === taskId) {
-      setSelectedTask(prev => ({ ...prev, assignie: newClaimStatus }));
+      setSelectedTask(prev => ({ ...prev, assignee: newClaimStatus }));
     }
 
   }, [selectedTask]);
@@ -235,7 +234,7 @@ useEffect(() => {
       </div>
 
       {/* Floating Action Button */}
-      {selectedTask && selectedTask.assignie && (
+      {selectedTask && selectedTask.assignee && (
         <button
           className="floating-action-btn"
           onClick={async () => {
