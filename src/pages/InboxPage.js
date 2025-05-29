@@ -1,4 +1,4 @@
-import React, { use, useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Header from '../components/Header';
@@ -37,13 +37,81 @@ const InboxPage = () => {
       { id: "14", title: "Incident_Response", user: "incidentTeam", date: "2024-03-12 17:05:20", assignie: true, tabs: ['Grafana', 'Pager', 'SRE', 'TAM', 'BMAaS', 'DC', 'Jira'], comments: [] },
     ]
   );
+  const handleTaskSelect = async (task) => {
+  setSelectedTask(null); // Reset first to force re-render
 
+  try {
+    await keycloak.updateToken(60);
+    const token = keycloak.token;
+
+    const response = await fetch(`http://localhost:7259/api/tasklist/v1/tasks/${task.id}/variables/search`, {
+      method: "POST",
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({})
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to fetch variables");
+    }
+
+    const variables = await response.json();
+    console.log(variables);
+    setSelectedTask({
+      ...task,
+      variables // inject variables into the task object
+    });
+
+  } catch (error) {
+    console.error("Failed to load task variables:", error);
+  }
+};
+
+useEffect(() => {
+  const fetchTasks = async () => {
+    try {
+      await keycloak.updateToken(60); 
+      const token = keycloak.token;
+
+      const response = await fetch('http://localhost:7259/api/tasklist/v1/tasks/search', {
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          state: "CREATED",
+          assignee: keycloak.tokenParsed.preferred_username,
+          candidateGroups: keycloak.tokenParsed.groups
+        })
+      });
+
+      const data = await response.json();
+      console.log('#####################');
+      console.log(data);
+      console.log(keycloak.tokenParsed.preferred_username);
+
+      setTasks(data);
+    } catch (error) {
+      console.error('Failed to fetch tasks:', error);
+    }
+  };
+  
+  
+
+  if (keycloak.authenticated) {
+    fetchTasks();
+  }
+}, [keycloak]);
   const tasksPerPage = 6;
   const totalPages = Math.ceil(tasks.length / tasksPerPage);
 
   const indexOfLastTask = currentPage * tasksPerPage;
   const indexOfFirstTask = indexOfLastTask - tasksPerPage;
-  const currentTasks = tasks.slice(indexOfFirstTask, indexOfLastTask);
+  const currentTasks = tasks ? tasks.slice(indexOfFirstTask, indexOfLastTask) : [];
+
 
   const iconColor = isHovered ? "rgb(250, 252, 254)" : "rgb(68, 84, 111)";
 
@@ -57,12 +125,12 @@ const InboxPage = () => {
   const handleClaimChange = useCallback((taskId, newClaimStatus) => {
     setTasks(prevTasks =>
       prevTasks.map(task =>
-        task.id === taskId ? { ...task, assignie: newClaimStatus } : task
+        task.id === taskId ? { ...task, assignee: newClaimStatus } : task
       )
     );
     // Also update the selectedTask if it's the one being modified
     if (selectedTask && selectedTask.id === taskId) {
-      setSelectedTask(prev => ({ ...prev, assignie: newClaimStatus }));
+      setSelectedTask(prev => ({ ...prev, assignee: newClaimStatus }));
     }
 
   }, [selectedTask]);
@@ -108,12 +176,12 @@ const InboxPage = () => {
                     key={task.id}
                     className="p-2 mb-2 border rounded"
                     style={{ backgroundColor: selectedTask?.id === task.id ? "#99def3" : "#fff", cursor: "pointer" }}
-                    onClick={() => setSelectedTask(task)}
-                    aria-label={`Select task ${task.title}`}
+                    onClick={() => handleTaskSelect(task)}
+                    aria-label={`Select task ${task.name}`}
                   >
-                    <div className='text-start'><strong>{task.title}</strong></div>
-                    <div className="text-muted small text-start">{task.user}</div>
-                    <div className="text-muted small text-start">{task.date}</div>
+                    <div className='text-start'><strong>{task.name}</strong></div>
+                    <div className="text-muted small text-start">{task.assignee}</div>
+                    <div className="text-muted small text-start">{task.creationDate}</div>
                   </div>
                 ))
               ) : (
@@ -166,7 +234,7 @@ const InboxPage = () => {
       </div>
 
       {/* Floating Action Button */}
-      {selectedTask && selectedTask.assignie && (
+      {selectedTask && selectedTask.assignee && (
         <button
           className="floating-action-btn"
           onClick={async () => {

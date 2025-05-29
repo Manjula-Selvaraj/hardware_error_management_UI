@@ -21,9 +21,10 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
   const [selectedTask, setSelectedTask] = useState(initialSelectedTask || {});
   const [tabs, setTabs] = useState(initialSelectedTask?.tabs || []);
   const [activeTab, setActiveTab] = useState('');
-  const [isClaimed, setIsClaimed] = useState(initialSelectedTask?.assignie || false);
+  const [isClaimed, setIsClaimed] = useState(initialSelectedTask?.assignee || false);
   const [formResponses, setFormResponses] = useState({});
   const [formSubmittedStatus, setFormSubmittedStatus] = useState({}); // ✅ per-task submission tracking
+//  const [isClaimed, setisClaim] = useState(initialSelectedTask?.assignee || false);
 
   const [loading, setLoading] = useState(false);
 
@@ -32,7 +33,16 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
     if (initialSelectedTask) {
       setSelectedTask(initialSelectedTask);
       setTabs(initialSelectedTask.tabs || []);
-      setIsClaimed(initialSelectedTask.assignie || false);
+      setIsClaimed(initialSelectedTask.assignee || false);
+      console.log('inisde taskdetails');
+      console.log(initialSelectedTask);
+      let tabs=[];
+      if(initialSelectedTask != null){
+        if(initialSelectedTask.taskDefinitionId ==="Task_SRE_Team"){
+            tabs=["SRE","Pager"];
+        }
+      }
+      initialSelectedTask.tabs=tabs;
       if (initialSelectedTask.title && initialSelectedTask.tabs?.includes(initialSelectedTask.title)) {
         setActiveTab(initialSelectedTask.title);
       } else {
@@ -69,7 +79,7 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
         let response;
         if (!newClaimStatus) {
           // UNCLAIM TASK
-          response = await fetch(`http://localhost:8080/v2/user-tasks/${selectedTask.id}/assignee`, {
+          response = await fetch(`http://localhost:7259/api/tasklist/v1/tasks/${selectedTask.id}/assignee`, {
             method: "DELETE",
             headers
           });
@@ -90,9 +100,15 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
 
         } else {
           // CLAIM TASK
-          response = await fetch(`http://localhost:8080/v2/user-tasks/${selectedTask.id}/assignment`, {
+          response = await fetch(`http://localhost:7259/api/tasklist/v1/tasks/${selectedTask.id}/assign`, {
             method: "POST",
-            headers
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              assignee: keycloak.tokenParsed.preferred_username
+            })
           });
 
           if (!response.ok) throw new Error("Failed to claim the task");
@@ -154,7 +170,7 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
   //  Tab component mapping
   const tabComponentMap = {
     Grafana: () => <h4>This is the Grafana tab</h4>,
-    Pager: () => <h4>This is the Pager tab</h4>,
+    Pager: () => <h4>{JSON.parse(selectedTask.variables.find(v => v.name==="pagerResponse")?.value)}</h4>,
     SRE: () => (
       <SRE_Details
         selectedTask={selectedTask}
@@ -196,8 +212,8 @@ const TaskDetails = ({ selectedTask: initialSelectedTask, onClaimChange, onAddJi
     <Card className="vh-100 d-flex flex-column p-1 scrollable-container">
       <Row>
         <Col md={10} className="mb-2 mt-3 text-start">
-          <strong className="mx-4">{selectedTask.title}</strong>
-          <strong>{selectedTask.date}</strong>
+          <strong className="mx-4">{selectedTask.name}</strong>
+          <strong>{selectedTask.creationDate}</strong>
         </Col>
         <Col md={2} className="mb-2 mt-2">
           <button

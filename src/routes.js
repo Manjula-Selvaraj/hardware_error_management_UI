@@ -14,16 +14,15 @@ const AppRoutes = () => {
       <Route path='/header' element={<Header />} />
 
       <Route
-        path="/tasklist"
-        element={
-          <ProtectedRoute allowedRoles={['tasklist']}>
-            <InboxPage />
-          </ProtectedRoute>
-        }
-
-      />
-      <Route path="/unauthorized" element={<Unauthorized />} />
-      <Route path="/inbox" element={<InboxPage />} />
+      path="/tasklist"
+      element={
+        <ProtectedRoute allowedRoles={['Tasklist']}>
+          <InboxPage />
+        </ProtectedRoute>
+      }
+      
+    />   
+    <Route path="/unauthorized" element={<Unauthorized />} />
 
     </Routes>
   );

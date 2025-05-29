@@ -23,7 +23,7 @@ const KeycloakLoginPage = () => {
         email: tokenParsed?.email,
       });
   
-      if (roles.includes('tasklist')) {
+      if (roles.includes('Tasklist')) {
         navigate('/tasklist');
       } else {
         navigate('/unauthorized');
