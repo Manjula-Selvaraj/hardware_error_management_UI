@@ -37,6 +37,8 @@ const InboxPage = () => {
       { id: "14", title: "Incident_Response", user: "incidentTeam", date: "2024-03-12 17:05:20", assignie: true, tabs: ['Grafana', 'Pager', 'SRE', 'TAM', 'BMAaS', 'DC', 'Jira'], comments: [] },
     ]
   );
+const base_url = process.env.BASE_URL
+const complete_url=process.env.COMPLETE_URL
   const handleTaskSelect = async (task) => {
   setSelectedTask(null); // Reset first to force re-render
 
@@ -44,7 +46,7 @@ const InboxPage = () => {
     await keycloak.updateToken(60);
     const token = keycloak.token;
 
-    const response = await fetch(`http://localhost:7259/api/tasklist/v1/tasks/${task.id}/variables/search`, {
+    const response = await fetch(`{base_url}/${task.id}/variables/search`, {
       method: "POST",
       headers: {
         'Authorization': `Bearer ${token}`,
@@ -75,7 +77,7 @@ useEffect(() => {
       await keycloak.updateToken(60); 
       const token = keycloak.token;
 
-      const response = await fetch('http://localhost:7259/api/tasklist/v1/tasks/search', {
+      const response = await fetch(`${base_url}/search`, {
         method: "POST",
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -145,7 +147,6 @@ useEffect(() => {
     setNewComments(updatedComments);
   };
 
-
   return (
     <div className="vh-100 d-flex flex-column">
       <Header username="Manjula" onLogout={() => alert('Logout clicked')} />
@@ -158,7 +159,7 @@ useEffect(() => {
             onClick={() => setIsCollapsed(!isCollapsed)}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            className={`hover-button ${isHovered ? 'hovered' : ''}`}
+            className={`hover-button-py-3 ${isHovered ? 'hovered' : ''}`}
             aria-label="Toggle sidebar"
           >
             {isCollapsed ? (
@@ -169,7 +170,7 @@ useEffect(() => {
           </div>
 
           {!isCollapsed && (
-            <div className="p-3 full-height scrollable-y" >
+            <div className="p-5 full-height scrollable-y" >
               {currentTasks.length > 0 ? (
                 currentTasks.map((task) => (
                   <div
@@ -251,7 +252,7 @@ useEffect(() => {
             try {
               const token = keycloak.token; // Adjust if you use another storage
 
-              const response = await fetch(`http://localhost:8080/v2/user-tasks/${selectedTask?.id}/completion`, {
+              const response = await fetch(`${complete_url}/${selectedTask?.id}/completion`, {
                 method: "POST",
                 headers: {
                   "Content-Type": "application/json",
