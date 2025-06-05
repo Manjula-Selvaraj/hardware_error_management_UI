@@ -10,9 +10,9 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
       const keycloakInstance = new Keycloak({
-        url: 'http://localhost:8080',
-        realm: 'myrealm',
-        clientId: 'my-react-client',
+        url: 'http://localhost:18080/auth',
+        realm: 'camunda-platform',
+        clientId: 'frontEnd',
       });
 
       keycloakInstance.init({
