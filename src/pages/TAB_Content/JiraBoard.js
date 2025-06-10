@@ -132,6 +132,10 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
         </div>
         <div class="content">
           <h2>Welcome to My Page</h2>
+          <div class="extra">
+                <div class="extra_item">to do v</div>
+                <div class="add_item"><span>+</span> add</div>
+            </div>
           <div class="dsc">
             <h3>description</h3>
             <textarea placeholder="Add a description"></textarea>
@@ -148,10 +152,48 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
               <button class="dots">...</button>
             </div>
             <div class="template">
-              <p class="t_name">📘 product requirement</p>
+              <span class="t_name">📘 product requirement</span>
               <button class="t_btn">try template</button>
             </div>
           </div>
+          <div class="activity">
+                <h3>activity</h3>
+                <div class="a_top">
+                    <div class="activity_set">
+                        <div class="activity_item">All</div>
+                        <div class="activity_item active">comments</div>
+                        <div class="activity_item">history</div>
+                        <div class="activity_item">work log</div>
+                    </div>
+                    <button>⬇️</button>
+                </div>
+                <div class="add_comment">
+                    <img src="https://placehold.co/20" class="profile_pic" />
+                    <div class="comment_box">
+                        <textarea placeholder="Add a comment..."></textarea>
+                        <p><strong>Pro tip:</strong> press <span class="key">M</span> to comment</p>
+                    </div>
+
+                </div>
+                <div class="comment_list">
+                    <div class="comment_item">
+                        <img src="https://placehold.co/30" class="profile_pic" />
+                        <div class="comment_content">
+                            <h4 class="commentor">Victor deb</h4>
+                            <p class="date">May 5, 2025 at 1:15 PM</p>
+                            <p class="comment_text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
+                                voluptatum.</p>
+                            <div class="comment_actions">
+                                <button class="action_item">↪</button>
+                                <button class="action_item">👍</button>
+                                <button class="action_item">🙂</button>
+                                <button class="action_item">📝</button>
+                                <button class="more">...</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div className="mx-1 mt-1 d-none">
           <Breadcrumb>
@@ -170,17 +212,17 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
             {selectedProject?.fields?.project?.name}
           </strong>
         </h3>
-        <div className="mx-4">
+        <div className="mx-4 d-none">
           <h5>
             <label>Description</label>
           </h5>
           <p>{extractDescriptionText(selectedProject?.fields?.description)}</p>
         </div>
 
-        <hr />
+        {/* <hr /> */}
 
         {/* Tab Section */}
-        <Card className="mb-4">
+        <Card className="mb-4 d-none">
           <CardBody>
             {/* Tab Navigation */}
             <div className="d-flex mb-3">
@@ -255,7 +297,7 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
       </Col>
 
       {/* Vertical Line */}
-      <Col md={1} className="d-flex align-items-right">
+      <Col md={1} className="d-flex align-items-right d-none">
         <div style={{ borderLeft: "1px solid #ccc", height: "99vh" }}></div>
       </Col>
 
