@@ -1,0 +1,335 @@
+.breadcrumbs {
+    display: flex;
+    gap: 4px;
+    padding-block: 8px;
+    color: #929090;
+    cursor: pointer;
+}
+
+.breadcrumbs p::after {
+    content: ' /'
+}
+
+.breadcrumbs p:last-child::after {
+    content: ''
+}
+
+.breadcrumbs p:hover,
+.breadcrumbs p:focus {
+    color: #000;
+}
+
+
+
+.content h2 {
+    background-color: #F1F2F4;
+    padding: 7px;
+    padding-bottom: 5px;
+    margin-left: -5px;
+    border-radius: 3px;
+}
+
+.content .extra {
+    display: flex;
+    gap: 8px;
+    margin-block: 4px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.content .extra .extra_item {
+    background-color: #F1F2F4;
+    padding: 4px 7px;
+    border-radius: 3px;
+    text-transform: capitalize;
+}
+
+.content .extra .add_item {
+    border: 1px solid #cd44af;
+    padding: 4px 7px;
+    border-radius: 3px;
+    text-transform: capitalize;
+    cursor: pointer;
+}
+
+
+
+.content .dsc {
+    margin-bottom: 24px;
+}
+
+.content .dsc h3 {
+    margin-bottom: 2px;
+}
+
+.content .dsc textarea {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 3px;
+    border: 1px solid #999;
+    height: 50px;
+    outline: none;
+    resize: none;
+    font-size: inherit;
+    font-family: inherit;
+    margin-bottom: 4px;
+}
+
+.content .dsc textarea:focus {
+    border-color: #333;
+}
+
+.content .dsc .buttonset {
+    display: flex;
+    align-items: center;
+    margin-left: 2px;
+}
+
+.content .dsc .buttonset button {
+    padding: 5px 8px;
+    padding-top: 7px;
+    font-size: inherit;
+    text-transform: capitalize;
+    border: none;
+    outline: none;
+    border-radius: 2px;
+    background-color: transparent;
+    color: #666;
+    cursor: pointer;
+}
+
+.content .dsc .buttonset button:hover {
+    color: #000;
+}
+
+.content .dsc .buttonset .btn-primary {
+    background-color: #0B69E0;
+    color: white;
+}
+
+.content .dsc .buttonset .btn-primary:hover {
+    background-color: #0A5BB2;
+    color: white;
+}
+
+
+.content .confluence {
+    margin-bottom: 18px;
+}
+
+.content .confluence .c_top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.content .confluence .c_top h3 {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.content .confluence .c_top h3 .info {
+    background-color: #000a;
+    display: flex;
+    border-radius: 50%;
+    color: white;
+    align-items: center;
+    justify-content: center;
+    padding: 1px 4px;
+    width: 11px;
+    height: 11px;
+    font-size: 8px;
+    text-transform: lowercase;
+    cursor: pointer;
+}
+
+.content .confluence .c_top button {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-size: 16px;
+    line-height: 0.5;
+    cursor: pointer;
+    color: #666;
+}
+
+.content .confluence .template {
+    box-shadow: 0 2px 1px rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px 2px;
+    margin-bottom: 8px;
+    font-size: inherit;
+    background-color: #fdfdfd;
+}
+
+.content .confluence .template button {
+
+    border: 1px solid #cd44af77;
+    outline: none;
+    background-color: transparent;
+    font-size: 8px;
+    padding: 1px 4px;
+    border-radius: 2px;
+    margin-right: 4px;
+    text-transform: uppercase;
+    cursor: pointer;
+    color: #666;
+    font-weight: 600;
+}
+
+.content .activity {
+    padding-bottom: 18px;
+}
+
+.content .activity .a_top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.content .activity .a_top .activity_set {
+    display: flex;
+    align-items: center;
+    gap: 1px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding: 2px;
+    color: #666;
+}
+
+.content .activity .a_top .activity_set .activity_item {
+    padding: 4px 8px;
+    cursor: pointer;
+    text-transform: capitalize;
+    border-radius: 2px;
+}
+
+.content .activity .a_top .activity_set .activity_item+.active {
+    border: 1px solid #265b9c;
+    background-color: #E1F5FF;
+    color: #265b9c;
+}
+
+.content .activity .a_top .activity_set .activity_item:hover {
+    background-color: #E1F5FF;
+    color: #265b9c;
+}
+
+.content .activity .a_top button {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-size: 12px;
+    /* line-height: 0.5; */
+    cursor: pointer;
+    color: #666;
+}
+
+.content .activity .add_comment {
+    display: flex;
+    width: 100%;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.content .activity .add_comment .profile_pic {
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    width: 17px;
+    height: 17px;
+    margin-top: 3px;
+}
+
+.content .activity .add_comment .comment_box {
+    width: 100%;
+}
+
+.content .activity .add_comment .comment_box p {
+    font-size: smaller;
+    color: #666;
+}
+
+.content .activity .add_comment .comment_box p .key {
+    display: inline-block;
+    border: 1px solid #999;
+    padding: 2px 3px;
+    border-radius: 2px;
+    color: #333;
+    font-weight: 600;
+}
+
+.content .activity .add_comment .comment_box textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 3px;
+    border: 1px solid #999;
+    height: 50px;
+    outline: none;
+    resize: none;
+    font-size: inherit;
+    font-family: inherit;
+    margin-bottom: 4px;
+}
+
+
+.content .activity .comment_list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.content .activity .comment_list .comment_item {
+    display: flex;
+    gap: 8px;
+}
+
+.content .activity .comment_list .comment_item .profile_pic {
+    border-radius: 50%;
+    aspect-ratio: 1/1;
+    width: 25px;
+    height: 25px;
+}
+
+.content .activity .comment_list .comment_item .comment_content .date {
+    color: #888;
+    /* text-transform: capitalize; */
+}
+
+.content .activity .comment_list .comment_item .comment_content .comment_text {
+    margin-block: 10px;
+}
+
+.content .activity .comment_list .comment_item .comment_content .comment_actions {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.content .activity .comment_list .comment_item .comment_content .comment_actions .action_item {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-size: 12px;
+    cursor: pointer;
+    color: #666;
+}
+
+.content .activity .comment_list .comment_item .comment_content .comment_actions .more {
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-size: 12px;
+    cursor: pointer;
+    color: #666;
+    line-height: 50%;
+    padding-bottom: 7px;
+    /* background-color: #0B69E0; */
+    font-size: large;
+}
