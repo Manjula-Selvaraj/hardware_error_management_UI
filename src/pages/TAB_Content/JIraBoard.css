@@ -1,3 +1,7 @@
+.text-start{
+    border-right: 1px solid #ddd;
+}
+
 .breadcrumbs {
     display: flex;
     gap: 4px;
@@ -19,14 +23,17 @@
     color: #000;
 }
 
-
+h3 {
+    font-size: 24px;
+    text-transform: capitalize;
+}
 
 .content h2 {
     background-color: #F1F2F4;
     padding: 7px;
     padding-bottom: 5px;
-    margin-left: -5px;
-    border-radius: 3px;
+    /* margin-left: -5px; */
+    border-radius: 5px;
 }
 
 .content .extra {
@@ -34,20 +41,20 @@
     gap: 8px;
     margin-block: 4px;
     align-items: center;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
 }
 
 .content .extra .extra_item {
     background-color: #F1F2F4;
-    padding: 4px 7px;
-    border-radius: 3px;
+    padding: 4px 12px;
+    border-radius: 5px;
     text-transform: capitalize;
 }
 
 .content .extra .add_item {
-    border: 1px solid #cd44af;
-    padding: 4px 7px;
-    border-radius: 3px;
+    border: 1px solid #8529cd;
+    padding: 4px 12px;
+    border-radius: 5px;
     text-transform: capitalize;
     cursor: pointer;
 }
@@ -55,7 +62,7 @@
 
 
 .content .dsc {
-    margin-bottom: 24px;
+    margin-bottom: 40px;
 }
 
 .content .dsc h3 {
@@ -65,9 +72,9 @@
 .content .dsc textarea {
     width: 100%;
     padding: 16px 20px;
-    border-radius: 3px;
+    border-radius: 5px;
     border: 1px solid #999;
-    height: 50px;
+    /* height: 50px; */
     outline: none;
     resize: none;
     font-size: inherit;
@@ -86,13 +93,13 @@
 }
 
 .content .dsc .buttonset button {
-    padding: 5px 8px;
+    padding: 5px 14px;
     padding-top: 7px;
     font-size: inherit;
     text-transform: capitalize;
     border: none;
     outline: none;
-    border-radius: 2px;
+    border-radius: 3px;
     background-color: transparent;
     color: #666;
     cursor: pointer;
@@ -103,18 +110,18 @@
 }
 
 .content .dsc .buttonset .btn-primary {
-    background-color: #0B69E0;
+    background-color: #8529cd;
     color: white;
 }
 
 .content .dsc .buttonset .btn-primary:hover {
-    background-color: #0A5BB2;
+    background-color: #7b26bb;
     color: white;
 }
 
 
 .content .confluence {
-    margin-bottom: 18px;
+    margin-bottom: 35px;
 }
 
 .content .confluence .c_top {
@@ -135,12 +142,12 @@
     display: flex;
     border-radius: 50%;
     color: white;
-    align-items: center;
+    align-items: end;
     justify-content: center;
-    padding: 1px 4px;
-    width: 11px;
-    height: 11px;
-    font-size: 8px;
+    /* padding: 1px 4px; */
+    width: 17px;
+    height: 17px;
+    font-size: 12px;
     text-transform: lowercase;
     cursor: pointer;
 }
@@ -149,15 +156,15 @@
     border: none;
     outline: none;
     background-color: transparent;
-    font-size: 16px;
+    font-size: 30px;
     line-height: 0.5;
     cursor: pointer;
     color: #666;
 }
 
 .content .confluence .template {
-    box-shadow: 0 2px 1px rgba(0, 0, 0, 0.2);
-    border-radius: 3px;
+    box-shadow: 0 2px 1px rgba(0, 0, 0, 0.2), 0 -1px 0px rgba(0, 0, 0, 0.02);
+    border-radius: 5px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -166,6 +173,10 @@
     margin-bottom: 8px;
     font-size: inherit;
     background-color: #fdfdfd;
+    /* background-color: aquamarine; */
+}
+.content .confluence .template:hover {
+    background-color: #f6f6f6;
 }
 
 .content .confluence .template button {
@@ -173,9 +184,9 @@
     border: 1px solid #cd44af77;
     outline: none;
     background-color: transparent;
-    font-size: 8px;
+    font-size: 12px;
     padding: 1px 4px;
-    border-radius: 2px;
+    border-radius: 3px;
     margin-right: 4px;
     text-transform: uppercase;
     cursor: pointer;
@@ -191,30 +202,30 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 12px;
+    margin-bottom: 18px;
 }
 
 .content .activity .a_top .activity_set {
     display: flex;
     align-items: center;
-    gap: 1px;
+    gap: 4px;
     border: 1px solid #ddd;
-    border-radius: 3px;
-    padding: 2px;
+    border-radius: 5px;
+    padding: 2px 3px;
     color: #666;
 }
 
 .content .activity .a_top .activity_set .activity_item {
-    padding: 4px 8px;
+    padding: 4px 12px;
     cursor: pointer;
     text-transform: capitalize;
-    border-radius: 2px;
+    border-radius: 3px;
 }
 
 .content .activity .a_top .activity_set .activity_item+.active {
-    border: 1px solid #265b9c;
-    background-color: #E1F5FF;
-    color: #265b9c;
+    border: 1px solid #8529cd;
+    background-color: #f5e8ff;
+    color: #8529cd;
 }
 
 .content .activity .a_top .activity_set .activity_item:hover {
@@ -226,7 +237,7 @@
     border: none;
     outline: none;
     background-color: transparent;
-    font-size: 12px;
+    font-size: 16px;
     /* line-height: 0.5; */
     cursor: pointer;
     color: #666;
@@ -242,8 +253,8 @@
 .content .activity .add_comment .profile_pic {
     border-radius: 50%;
     aspect-ratio: 1/1;
-    width: 17px;
-    height: 17px;
+    width: 30px;
+    height: 30px;
     margin-top: 3px;
 }
 
@@ -259,8 +270,8 @@
 .content .activity .add_comment .comment_box p .key {
     display: inline-block;
     border: 1px solid #999;
-    padding: 2px 3px;
-    border-radius: 2px;
+    padding: 1px 5px;
+    border-radius: 3px;
     color: #333;
     font-weight: 600;
 }
@@ -268,42 +279,51 @@
 .content .activity .add_comment .comment_box textarea {
     width: 100%;
     padding: 8px 12px;
-    border-radius: 3px;
+    border-radius: 5px;
     border: 1px solid #999;
-    height: 50px;
+    height: 80px;
     outline: none;
     resize: none;
     font-size: inherit;
     font-family: inherit;
-    margin-bottom: 4px;
+    margin-bottom: 2px;
 }
 
 
 .content .activity .comment_list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
 }
 
 .content .activity .comment_list .comment_item {
     display: flex;
-    gap: 8px;
+    gap: 12px;
 }
 
 .content .activity .comment_list .comment_item .profile_pic {
     border-radius: 50%;
     aspect-ratio: 1/1;
-    width: 25px;
-    height: 25px;
+    width: 40px;
+    height: 40px;
+}
+
+.content .activity .comment_list .comment_item .comment_content .commentor {
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1;
+    color: #333;
 }
 
 .content .activity .comment_list .comment_item .comment_content .date {
     color: #888;
+    font-size: 15px;
+    line-height: 1;
     /* text-transform: capitalize; */
 }
 
 .content .activity .comment_list .comment_item .comment_content .comment_text {
-    margin-block: 10px;
+    margin-block: 20px;
 }
 
 .content .activity .comment_list .comment_item .comment_content .comment_actions {
@@ -316,7 +336,7 @@
     border: none;
     outline: none;
     background-color: transparent;
-    font-size: 12px;
+    font-size: 18px;
     cursor: pointer;
     color: #666;
 }
@@ -325,7 +345,7 @@
     border: none;
     outline: none;
     background-color: transparent;
-    font-size: 12px;
+    font-size: 30px;
     cursor: pointer;
     color: #666;
     line-height: 50%;
