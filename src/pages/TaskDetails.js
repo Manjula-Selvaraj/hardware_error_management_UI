@@ -46,7 +46,7 @@ const TaskDetails = ({
       let tabs = [];
       if (initialSelectedTask != null) {
         if (initialSelectedTask.taskDefinitionId === "Task_SRE_Team") {
-          tabs = ["SRE", "Pager"];
+          tabs = ["SRE", "Pager", "Jira"];
         }
       }
       initialSelectedTask.tabs = tabs;
@@ -256,7 +256,7 @@ const TaskDetails = ({
           <button
             className={`btn`}
             onClick={handleClaimToggle}
-            style={{ backgroundColor: "#bf0000", color: "white" }}
+            style={{ backgroundColor: "#8529cd", color: "white" }}
             aria-label={isClaimed ? "Unclaim Task" : "Claim Task"}
           >
             {loading ? (
@@ -288,7 +288,7 @@ const TaskDetails = ({
               variant="scrollable"
               scrollButtons="auto"
               TabIndicatorProps={{
-                style: { backgroundColor: "#bf0000" },
+                style: { backgroundColor: "#8529cd" },
               }}
             >
               {tabs.map((tab) => (
@@ -299,12 +299,12 @@ const TaskDetails = ({
                   sx={{
                     fontWeight: "bold",
                     textTransform: "none",
-                    color: activeTab === tab ? "#bf0000" : "inherit",
+                    color: activeTab === tab ? "#8529cd" : "inherit",
                     ...(activeTab === tab && {
                       "&.Mui-selected": {
-                        color: "#bf0000",
+                        color: "#8529cd",
                       },
-                      color: "#bf0000",
+                      color: "#8529cd",
                     }),
                   }}
                 />

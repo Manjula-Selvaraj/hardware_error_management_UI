@@ -101,32 +101,48 @@ const SRE_Details = ({
         >
           <Card
             className="mb-2 w-100 h-40 p-2 card-shadow border-0"
-            style={{ height: "39%", borderRadius: "0px" }}
+            style={{ height: "37%", borderRadius: "0px" }}
           >
             <div style={{ fontWeight: "bold" }}>Error Description</div>
             <CardBody>
-              {/* Add your content for the 70% section here */}
-              <p>More details about Error Description</p>
+              <p>
+                Application failed to connect to the database due to a timeout.
+                Suspected root cause is an unstable network connection between
+                the app server and the database cluster. Impacted users are
+                unable to retrieve or submit data. Issue started at
+                approximately 10:12 AM IST and is intermittent.
+              </p>
             </CardBody>
           </Card>
           <Card
             className="mb-2 w-100 h-40 p-2 card-shadow border-0"
-            style={{ height: "38%", borderRadius: "0px" }}
+            style={{ height: "36%", borderRadius: "0px" }}
           >
             <div style={{ fontWeight: "bold" }}>Investigation Details</div>
             <CardBody>
-              {/* Add your content for the 70% section here */}
-              <p>More details about Investigation Details</p>
+              <p>
+                Initial investigation by the SRE team indicates intermittent
+                packet loss between the application server and the database
+                host. Network traces show latency spikes around the time of
+                failure. No recent deployment or configuration changes noted.
+                Awaiting confirmation from the network team for further
+                analysis.
+              </p>
             </CardBody>
           </Card>
           <Card
             className="mb-2 w-100 h-20 p-2 card-shadow border-0"
-            style={{ height: "20%", borderRadius: "0px" }}
+            style={{ height: "24%", borderRadius: "0px" }}
           >
             <div style={{ fontWeight: "bold" }}>Troubleshooting</div>
             <CardBody>
-              {/* Add your content for the 70% section here */}
-              <p>More details about Troubleshooting</p>
+              <p>
+                Restarted the affected application pods and flushed DNS cache.
+                Temporarily rerouted traffic to a healthy database replica.
+                Monitored logs and metrics using Prometheus and Grafana for
+                anomalies. Engaged network team to run deeper diagnostics on the
+                connectivity layer.
+              </p>
             </CardBody>
           </Card>
         </Col>
@@ -140,8 +156,47 @@ const SRE_Details = ({
           >
             <div style={{ fontWeight: "bold" }}>Play Book</div>
             <CardBody>
-              {/* Add your content for the 30% section here */}
-              <p>More details about Play Book</p>
+              <ul style={{ paddingLeft: "20px" }}>
+                <li style={{ marginTop: "5px" }}>
+                  Verify the alert source and confirm the error is reproducible.
+                </li>
+                <li style={{ marginTop: "5px" }}>
+                  Check application logs for exceptions or timeouts related to
+                  the database.
+                </li>
+                <li style={{ marginTop: "5px" }}>
+                  Validate connectivity from the application server to the
+                  database (ping/telnet).
+                </li>
+                <li style={{ marginTop: "5px" }}>
+                  Review metrics (CPU, memory, latency) on both app and DB nodes
+                  via monitoring tools.
+                </li>
+                <li style={{ marginTop: "5px" }}>
+                  Inspect recent deployment or infrastructure changes in the
+                  last 24 hours.
+                </li>
+                <li style={{ marginTop: "5px" }}>
+                  Restart impacted services or pods to see if the issue is
+                  transient.
+                </li>
+                <li style={{ marginTop: "5px" }}>
+                  Engage the network team to trace any packet loss or latency
+                  issues.
+                </li>
+                <li style={{ marginTop: "5px" }}>
+                  Failover to a replica database instance if supported and
+                  necessary.
+                </li>
+                <li style={{ marginTop: "5px" }}>
+                  Communicate interim status and workarounds to stakeholders and
+                  support teams.
+                </li>
+                <li style={{ marginTop: "5px" }}>
+                  Document the root cause, resolution steps, and preventive
+                  actions in the incident tracker.
+                </li>
+              </ul>
             </CardBody>
           </Card>
         </Col>

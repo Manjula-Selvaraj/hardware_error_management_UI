@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { Dropdown } from "react-bootstrap";
 import { FaUserCircle } from "react-icons/fa";
-import logo from "../assests/images/logo.png";
+import logo from "../assests/images/rakuten-purple-logo.png";
 import { AuthContext } from "../AuthProvider";
 
 const Header = () => {
@@ -28,7 +28,7 @@ const Header = () => {
           className="border-0 p-0"
           style={{ color: "rgb(68, 84, 111)", textDecoration: "none" }}
         >
-          <FaUserCircle size={24} style={{ color: "#bf0000" }} />
+          <FaUserCircle size={24} style={{ color: "#8529cd" }} />
         </Dropdown.Toggle>
         <Dropdown.Menu>
           <Dropdown.Header>{userInfo.name}</Dropdown.Header>
