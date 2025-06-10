@@ -316,10 +316,14 @@ const TaskDetails = ({
             <div
               className="text-start vh-60"
               style={{
-                marginTop: ["SRE", "TAM", "BMAaS", "DC"].includes(activeTab)
+                marginTop: ["SRE", "TAM", "BMAaS", "DC", "Jira"].includes(
+                  activeTab
+                )
                   ? "5px"
                   : "25px",
-                marginLeft: ["SRE", "TAM", "BMAaS", "DC"].includes(activeTab)
+                marginLeft: ["SRE", "TAM", "BMAaS", "DC", "Jira"].includes(
+                  activeTab
+                )
                   ? "0px"
                   : "25px",
               }}
