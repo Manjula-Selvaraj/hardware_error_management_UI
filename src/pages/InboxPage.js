@@ -23,6 +23,7 @@ const InboxPage = () => {
   const [tasks, setTasks] = useState([]);
   const [newComments, setNewComments] = useState([]);
   const [newJiraComments, setNewJiraComments] = useState([]);
+  const [idForPopup,setIdForPopup] = useState(null);
 
   const handleTaskSelect = async (task) => {
     setSelectedTask(null); // Reset first to force re-render
@@ -197,33 +198,66 @@ const InboxPage = () => {
       sortable: false,
       filterable: false,
       renderCell: (params) => (
-        <button
-          style={{
-            background: "none",
-            border: "none",
-            cursor: "pointer",
-            padding: 0,
-          }}
-          title="View Task"
-          onClick={(e) => {
-            e.stopPropagation();
-            const task = tasks.find((t) => t.id === params.id);
-            if (task) handleTaskSelect(task);
-          }}
-        >
-          <span style={{ color: "#44546f", fontSize: "1.2rem" }}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              fill="currentColor"
-              viewBox="0 0 16 16"
-            >
-              <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zm-8 4.5c-3.584 0-6.29-3.13-7.288-4.5C1.71 6.13 4.416 3 8 3s6.29 3.13 7.288 4.5c-.998 1.37-3.704 4.5-7.288 4.5z" />
-              <path d="M8 5.5A2.5 2.5 0 1 0 8 10a2.5 2.5 0 0 0 0-4.5zm0 1A1.5 1.5 0 1 1 8 9a1.5 1.5 0 0 1 0-3z" />
+        <div>
+          <button
+            style={{
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '5px'
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              console.log('params', params);
+              //params.api.setRowId(params.id);
+              setIdForPopup(params.id);
+            }}
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24">
+              <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
             </svg>
-          </span>
-        </button>
+          </button>
+          {idForPopup === params.id && (
+            <div style={{
+              position: 'absolute',
+              background: 'white',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+              borderRadius: '4px',
+              display: 'flex',
+              flexDirection: 'column',
+              zIndex: 1000,
+              right: '24px',
+              top: '0px',
+            }}>
+              <button 
+                style={{
+                  // display: 'block',
+                  width: '100%',
+                  padding: '1px 16px',
+                  border: 'none',
+                  background: 'none',
+                  cursor: 'pointer'
+                }}
+                onClick={() => handleTaskSelect(params.row)}
+              >
+                View
+              </button>
+              <button
+                style={{
+                  // display: 'block',
+                  width: '100%',
+                  padding: '1px 16px',
+                  border: 'none',
+                  background: 'none',
+                  cursor: 'pointer'
+                }}
+                onClick={() => {/* Add claim logic here */}}
+              >
+                Claim
+              </button>
+            </div>
+          )}
+        </div>
       ),
     },
   ];
@@ -472,9 +506,11 @@ const InboxPage = () => {
                 },
                 "& .even-row": {
                   backgroundColor: "#f9fafb",
+                  position: "relative",
                 },
                 "& .odd-row": {
                   backgroundColor: "#f1f3f6",
+                  position: "relative",
                 },
                 // Remove outer borders
                 "& .MuiDataGrid-root": {

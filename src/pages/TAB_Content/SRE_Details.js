@@ -156,7 +156,7 @@ const SRE_Details = ({
           >
             <div style={{ fontWeight: "bold" }}>Play Book</div>
             <CardBody>
-              <ul style={{ paddingLeft: "20px" }}>
+              {/* <ul style={{ paddingLeft: "20px" }}>
                 <li style={{ marginTop: "5px" }}>
                   Verify the alert source and confirm the error is reproducible.
                 </li>
@@ -196,7 +196,40 @@ const SRE_Details = ({
                   Document the root cause, resolution steps, and preventive
                   actions in the incident tracker.
                 </li>
-              </ul>
+              </ul> */}
+              <div >
+  {[
+    "Verify the alert source and confirm the error is reproducible.",
+    "Check application logs for exceptions or timeouts related to the database.",
+    "Validate connectivity from the application server to the database (ping/telnet).",
+    "Review metrics (CPU, memory, latency) on both app and DB nodes via monitoring tools.",
+    "Inspect recent deployment or infrastructure changes in the last 24 hours.",
+    "Restart impacted services or pods to see if the issue is transient.",
+    "Engage the network team to trace any packet loss or latency issues.",
+    "Failover to a replica database instance if supported and necessary.",
+    "Communicate interim status and workarounds to stakeholders and support teams.",
+    "Document the root cause, resolution steps, and preventive actions in the incident tracker."
+  ].map((text, index) => (
+    <div key={index} style={{ marginTop: "10px", display: "flex", alignItems: "start" }}>
+      <input
+        type="checkbox"
+        id={`checkbox-${index}`}
+        style={{
+          accentColor: "rgb(133, 41, 205)",
+          marginRight: "8px",
+          marginTop: "5px",
+          cursor: "pointer"
+        }}
+      />
+      <label
+        htmlFor={`checkbox-${index}`}
+        style={{ cursor: "pointer", margin: 0 }}
+      >
+        {text}
+      </label>
+    </div>
+  ))}
+</div>
             </CardBody>
           </Card>
         </Col>
