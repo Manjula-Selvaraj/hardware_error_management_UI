@@ -4,7 +4,7 @@ import { AuthProvider } from './AuthProvider';
 import { BrowserRouter } from 'react-router-dom';
 import AppRoutes from './routes';
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import './App.scss'
 function App() {
   return (
     <div className="App">

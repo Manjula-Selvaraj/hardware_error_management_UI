@@ -15,6 +15,7 @@ import { AuthContext } from "../AuthProvider";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
+import "../App.scss";
 
 const TaskDetails = ({
   selectedTask: initialSelectedTask,
@@ -237,7 +238,6 @@ const TaskDetails = ({
         <Col md={10} className="text-start">
           <strong
             style={{
-              color: "#2a2e33",
               fontFamily: "Roboto",
             }}
           >
@@ -245,7 +245,6 @@ const TaskDetails = ({
           </strong>
           <div
             style={{
-              color: "#2a2e33",
               fontSize: "14px",
             }}
           >

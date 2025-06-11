@@ -1,0 +1,105 @@
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --header-color: #f5f5f5;
+   --card-bg: #2c2c2c;
+  --border-color: #444;
+}
+
+[data-theme='dark'] {
+  --bg-color: #1f1f1f;
+  --text-color: #ffffff;
+  --header-color: #2c2c2c;
+ --card-bg: #2c2c2c;
+  --border-color: #444;
+}
+
+// Global styling using theme variables
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+
+  header {
+    background-color: var(--header-color);
+  }
+
+  .form-select,
+  .assigned,.search-bar {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+  }
+  .themed-header {
+  background-color: var(--header-color) !important;
+  color: var(--text-color) !important;
+  font-weight: bold;
+}
+
+.themed-cell {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+}
+.text-start{
+  color: var(--text-color) !important;
+
+
+}
+
+  // Optional: Add grid styles if using MUI DataGrid
+ .MuiDataGrid-root {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+
+ .MuiDataGrid-columnHeaders {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+}
+
+.MuiDataGrid-columnHeaderTitle {
+  color: var(--text-color) !important;
+}
+
+  .MuiDataGrid-cell,.text-start {
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+  }
+.text-start {
+    color: var(--text-color) !important;
+  }
+
+  .MuiDataGrid-footerContainer {
+    background-color: var(--header-color) !important;
+    color: var(--header-text-color) !important;
+  }
+}
+}
+.card,
+.card-body,
+.card-header,
+textarea,
+select,
+button,
+input,
+.form-select,
+.comment_box,
+
+.activity_item,
+.breadcrumbs,
+.template {
+  background-color: var(--header-color);
+  color: var(--text-color);
+  border-color: var(--border-color);
+}
+.template{
+     background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+}
+h2 ,.extra_item{
+  color: var(--text-color) !important;
+       background-color: var(--bg-color) !important;
+
+}
+textarea::placeholder,
+input::placeholder {
+  color: #aaa;
+}
+
