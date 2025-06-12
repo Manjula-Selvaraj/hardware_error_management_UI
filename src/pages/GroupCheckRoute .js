@@ -8,7 +8,7 @@ const GroupCheckRoute = () => {
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState('');
   const navigate = useNavigate();
-
+const URL=process.env.REACT_APP_URL;
   useEffect(() => {
     if (keycloak && keycloak.authenticated) {
       const tokenGroups = keycloak.tokenParsed?.groups || [];
@@ -16,14 +16,49 @@ const GroupCheckRoute = () => {
     }
   }, [keycloak]);
 
-  const handleContinue = () => {
-    if (selectedGroup) {
+ const handleContinue = async () => {
+  if (selectedGroup) {
+    try {
+      await keycloak.updateToken(60);
+      const token = keycloak.token;
+            const assignee = keycloak?.tokenParsed?.preferred_username;
+
       localStorage.setItem('selectedGroup', selectedGroup);
+
+      const payload = {
+        candidateGroup: selectedGroup,
+        state: 'CREATED',
+        assignee: assignee,
+        pageSize: 20,
+      };
+
+      const response = await fetch(
+        `${URL}/tasks/search`,
+        payload,
+        {
+           method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`, 
+          },
+        }
+      );
+
+      const taskList = response.data;
+      
+      // Optional: store or pass the task list
+      localStorage.setItem('taskList', JSON.stringify(taskList));
+      console.log("123456789",response);
+      
       navigate('/tasklist');
-    } else {
-      alert('Please select a group first.');
+    } catch (error) {
+      console.error('Task search failed:', error);
+      alert('Failed to fetch task list.');
     }
-  };
+  } else {
+    alert('Please select a group first.');
+  }
+};
+
 
   return (
     <div className="container mt-4">

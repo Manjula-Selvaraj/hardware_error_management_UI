@@ -61,6 +61,9 @@ const TaskDetails = ({
       }
     }
   }, [initialSelectedTask]);
+const URL=process.env.REACT_APP_URL;
+console.log("URL is:", process.env.REACT_APP_URL);
+
 
   const handleClaimToggle = async () => {
     const newClaimStatus = !isClaimed;
@@ -88,12 +91,13 @@ const TaskDetails = ({
         if (!newClaimStatus) {
           // UNCLAIM TASK
           response = await fetch(
-            `http://localhost:7259/api/tasklist/v1/tasks/${selectedTask.id}/assignee`,
+            `${URL}/tasks/${selectedTask.id}/assignee`,
             {
               method: "DELETE",
               headers,
             }
           );
+          
 
           if (!response.ok) throw new Error("Failed to unclaim the task");
 
@@ -111,7 +115,7 @@ const TaskDetails = ({
         } else {
           // CLAIM TASK
           response = await fetch(
-            `http://localhost:7259/api/tasklist/v1/tasks/${selectedTask.id}/assign`,
+            `${URL}/tasks/${selectedTask.id}/assign`,
             {
               method: "POST",
               headers: {
@@ -120,6 +124,8 @@ const TaskDetails = ({
               },
               body: JSON.stringify({
                 assignee: keycloak.tokenParsed.preferred_username,
+                allowOverride: true,       
+        action: "assign" 
               }),
             }
           );
