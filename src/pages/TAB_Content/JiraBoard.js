@@ -17,7 +17,7 @@ import {
 import "../styles.css";
 import { Breadcrumb } from "react-bootstrap";
 import "./JIraBoard.css";
-
+import '../../App.scss';
 import jsonData from "./jsonData.json";
 
 const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
@@ -131,11 +131,13 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
           </div>
         </div>
         <div class="content">
-          <h2>Welcome to My Page</h2>
+        <h2>Welcome to My Page</h2>
+        
           <div class="extra">
                 <div class="extra_item">to do v</div>
                 <div class="add_item"><span>+</span> add</div>
             </div>
+            
           <div class="dsc">
             <h3>description</h3>
             <textarea placeholder="Add a description"></textarea>

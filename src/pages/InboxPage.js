@@ -9,7 +9,7 @@ import { AuthContext } from "../AuthProvider";
 import Spinner from "react-bootstrap/Spinner";
 import { DataGrid } from "@mui/x-data-grid";
 import Box from "@mui/material/Box";
-
+import "../App.scss";
 const InboxPage = () => {
   const base_url = process.env.REACT_APP_BASE_URL;
   const complete_url = process.env.REACT_APP_COMPLETE_URL;
@@ -131,23 +131,30 @@ const InboxPage = () => {
       field: "serialNo",
       headerName: "Serial No",
       width: 100,
+       headerClassName: "themed-header",
+    cellClassName: "themed-cell",
       valueGetter: (value, row) => {
         if (!row || !row.id) return "";
         // Find the index of the row in the tasks array and add 1 for serial number
         const index = tasks.findIndex((t) => t.id === row.id);
-        return index >= 0 ? index + 1 : "";
+        return  index >= 0 ? index + 1 : "";
       },
     },
-    { field: "id", headerName: "ID", width: 150 },
-    { field: "name", headerName: "Task Name", width: 280 },
+    { field: "id", headerName: "ID", width: 150, headerClassName: "themed-header",
+    cellClassName: "themed-cell", },
+    { field: "name", headerName: "Task Name", width: 280, headerClassName: "themed-header",
+    cellClassName: "themed-cell",},
     {
       field: "processName",
       headerName: "Process Name",
       width: 280,
+       headerClassName: "themed-header",
+    cellClassName: "themed-cell",
       renderCell: (params) => {
         console.log("Row data:", params);
         return (
           <div
+          className="assigned"
             style={{
               display: "flex",
               justifyContent: "center",
@@ -178,27 +185,36 @@ const InboxPage = () => {
     {
       field: "creationDate",
       headerName: "Created At",
-      width: 180,
+      width: 180, headerClassName: "themed-header",
+    cellClassName: "themed-cell",
+      className:"assigned",
       valueGetter: (value, row) =>
         row.creationDate
           ? new Date(row.creationDate || "").toLocaleString()
           : "",
     },
-    { field: "assignee", headerName: "Assignee", width: 150 },
+    { field: "assignee", headerName: "Assignee", width: 150 , className:"assigned", headerClassName: "themed-header",
+    cellClassName: "themed-cell",
+},
     {
       field: "priority",
       headerName: "Priority",
       width: 120,
+       headerClassName: "themed-header",
+    cellClassName: "themed-cell",
+      className:"assigned"
     },
     {
       field: "action",
       headerName: "View",
       width: 80,
+       headerClassName: "themed-header",
+    cellClassName: "themed-cell",
       sortable: false,
       filterable: false,
       renderCell: (params) => (
-        <button
-          style={{
+        <button 
+className="assigned"          style={{
             background: "none",
             border: "none",
             cursor: "pointer",
@@ -332,6 +348,7 @@ const InboxPage = () => {
         </div>
 
         <div
+        
           className={`flex-grow-1 ${
             !selectedTask ? "d-flex" : "d-none"
           } flex-column p-2 border-0`}
@@ -345,6 +362,7 @@ const InboxPage = () => {
           >
             {/* Header for the Task List */}
             <div
+            className="header-title"
               style={{
                 fontWeight: "bold",
                 fontSize: "24px",
@@ -364,6 +382,7 @@ const InboxPage = () => {
               }}
             >
               <div
+className="search-bar"
                 style={{
                   position: "relative",
                   width: "320px",
@@ -389,6 +408,7 @@ const InboxPage = () => {
                 <input
                   type="text"
                   placeholder="Search tasks..."
+                  className="assigned"
                   style={{
                     border: "none",
                     outline: "none",
@@ -430,6 +450,7 @@ const InboxPage = () => {
           </div>
           <Box sx={{ height: 800, width: "100%" }}>
             <div
+              className="assigned"
               style={{
                 display: "flex",
                 width: "100%",
@@ -442,7 +463,7 @@ const InboxPage = () => {
             </div>
             <DataGrid
               rows={tasks
-                ?.filter((task) => task.assigne === 0)
+                ?.filter((task) => task.assigne !== null)
                 .map((task) => ({
                   id: task.id,
                   name: task.name,
@@ -499,6 +520,7 @@ const InboxPage = () => {
           </Box>
           <Box sx={{ marginTop: "80px" }}>
             <div
+              className="assigned"
               style={{
                 display: "flex",
                 width: "100%",
@@ -510,9 +532,21 @@ const InboxPage = () => {
               Issues assigned to my group
             </div>
             {console.log(tasks)}
-            <DataGrid
+            {console.log("Assigned to me rows:", tasks
+  ?.filter((task) => task.assigne !== null)
+  .map((task) => ({
+    id: task.id,
+    name: task.name,
+    assignee: task.assigne,
+    creationDate: task?.creationDate,
+    processName: task.processName,
+    priority: task.priority,
+  })))
+}
+            <DataGrid 
+            className="assigned"
               rows={tasks
-                .filter((task) => task.assigne === 1)
+                .filter((task) => task.assigne === null)
                 .map((task) => ({
                   id: task.id,
                   name: task.name,

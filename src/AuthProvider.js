@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
       const keycloakInstance = new Keycloak({
         url: 'http://localhost:18080/auth',
         realm: 'camunda-platform',
-        clientId: 'frontEnd',
+        clientId: 'camunda-tasklist',
       });
 
       keycloakInstance.init({
