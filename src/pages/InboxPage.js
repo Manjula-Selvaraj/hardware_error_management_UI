@@ -1,5 +1,8 @@
 import React, { useCallback, useEffect, useState, useContext } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { CiMenuKebab } from "react-icons/ci";
+import { FaMagnifyingGlass, FaRegEye } from "react-icons/fa6";
+import { IoMdCheckmarkCircleOutline } from "react-icons/io";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Header from "../components/Header";
 import TaskDetails from "./TaskDetails";
@@ -23,7 +26,7 @@ const InboxPage = () => {
   const [tasks, setTasks] = useState([]);
   const [newComments, setNewComments] = useState([]);
   const [newJiraComments, setNewJiraComments] = useState([]);
-  const [idForPopup,setIdForPopup] = useState(null);
+  const [idForPopup, setIdForPopup] = useState(null);
 
   const handleTaskSelect = async (task) => {
     setSelectedTask(null); // Reset first to force re-render
@@ -146,7 +149,6 @@ const InboxPage = () => {
       headerName: "Process Name",
       width: 280,
       renderCell: (params) => {
-        console.log("Row data:", params);
         return (
           <div
             style={{
@@ -185,7 +187,7 @@ const InboxPage = () => {
           ? new Date(row.creationDate || "").toLocaleString()
           : "",
     },
-    { field: "assignee", headerName: "Assignee", width: 150 },
+    { field: "assigne", headerName: "Assignee", width: 150 },
     {
       field: "priority",
       headerName: "Priority",
@@ -201,59 +203,64 @@ const InboxPage = () => {
         <div>
           <button
             style={{
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '5px'
+              background: "transparent",
+              border: "none",
+              cursor: "pointer",
+              padding: "5px",
             }}
             onClick={(e) => {
               e.stopPropagation();
-              console.log('params', params);
+              console.log("params", params);
               //params.api.setRowId(params.id);
-              setIdForPopup(params.id);
+              setIdForPopup(idForPopup === params.id ? null : params.id);
             }}
           >
-            <svg width="24" height="24" viewBox="0 0 24 24">
-              <path d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-            </svg>
+            <CiMenuKebab />
           </button>
           {idForPopup === params.id && (
-            <div style={{
-              position: 'absolute',
-              background: 'white',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-              borderRadius: '4px',
-              display: 'flex',
-              flexDirection: 'column',
-              zIndex: 1000,
-              right: '24px',
-              top: '0px',
-            }}>
-              <button 
+            <div
+              style={{
+                position: "absolute",
+                background: "white",
+                boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+                borderRadius: "4px",
+                display: "flex",
+                flexDirection: "column",
+                zIndex: 1000,
+                right: "65px",
+                top: "45px",
+                width: "120px",
+              }}
+            >
+              <button
                 style={{
                   // display: 'block',
-                  width: '100%',
-                  padding: '1px 16px',
-                  border: 'none',
-                  background: 'none',
-                  cursor: 'pointer'
+                  width: "100%",
+                  padding: "1px 16px",
+                  border: "none",
+                  background: "none",
+                  cursor: "pointer",
+                  borderBottom: "1px solid #ddd",
                 }}
                 onClick={() => handleTaskSelect(params.row)}
               >
-                View
+                <FaRegEye /> View
               </button>
               <button
                 style={{
                   // display: 'block',
-                  width: '100%',
-                  padding: '1px 16px',
-                  border: 'none',
-                  background: 'none',
-                  cursor: 'pointer'
+                  width: "100%",
+                  padding: "1px 16px",
+                  border: "none",
+                  background: "none",
+                  cursor: "pointer",
                 }}
-                onClick={() => {/* Add claim logic here */}}
+                onClick={() => {
+                  /* Add claim logic here */
+                }}
               >
-                Claim
+                <IoMdCheckmarkCircleOutline />{" "}
+                {params?.row?.assigne === "demo" ? "Claim" : "Assign to me"}
               </button>
             </div>
           )}
@@ -410,16 +417,7 @@ const InboxPage = () => {
                   padding: "2px 12px",
                 }}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  fill="#44546f"
-                  viewBox="0 0 16 16"
-                  style={{ marginRight: "8px" }}
-                >
-                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.242 1.106a5 5 0 1 1 0-10 5 5 0 0 1 0 10z" />
-                </svg>
+                <FaMagnifyingGlass />
                 <input
                   type="text"
                   placeholder="Search tasks..."
@@ -431,6 +429,7 @@ const InboxPage = () => {
                     width: "100%",
                     color: "#2a2e33",
                     padding: "6px 0",
+                    marginLeft: "8px",
                   }}
                   value={""}
                   onChange={() => {}}
@@ -476,7 +475,7 @@ const InboxPage = () => {
             </div>
             <DataGrid
               rows={tasks
-                ?.filter((task) => task.assigne === 0)
+                ?.filter((task) => task.assigne === "demo")
                 .map((task) => ({
                   id: task.id,
                   name: task.name,
@@ -484,6 +483,7 @@ const InboxPage = () => {
                   creationDate: task?.creationDate,
                   processName: task.processName,
                   priority: task.priority,
+                  assigne: task.assigne,
                 }))}
               columns={columns}
               hideFooterPagination
@@ -545,10 +545,9 @@ const InboxPage = () => {
             >
               Issues assigned to my group
             </div>
-            {console.log(tasks)}
             <DataGrid
               rows={tasks
-                .filter((task) => task.assigne === 1)
+                .filter((task) => task.assigne === null)
                 .map((task) => ({
                   id: task.id,
                   name: task.name,
