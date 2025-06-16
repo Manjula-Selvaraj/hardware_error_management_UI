@@ -640,7 +640,8 @@ className="search-bar"
               const token = keycloak.token; // Adjust if you use another storage
 
               const response = await fetch(
-                `${complete_url}/${selectedTask?.id}/completion`,
+                // `${complete_url}/${selectedTask?.id}/completion`,
+                `${complete_url}/tasks/${selectedTask?.id}/complete`,
                 {
                   method: "POST",
                   headers: {

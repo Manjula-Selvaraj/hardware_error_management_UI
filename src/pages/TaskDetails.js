@@ -280,6 +280,15 @@ console.log("URL is:", process.env.REACT_APP_URL);
               "Claim"
             )}
           </button>
+          {isClaimed && !loading && (
+    <button
+      className="btn mt-2"
+      onClick={handleSubmit}
+      style={{ backgroundColor: "#198754", color: "white" }}
+    >
+      Submit
+    </button>
+  )}
         </Col>
       </Row>
 
