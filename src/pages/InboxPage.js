@@ -27,6 +27,12 @@ const InboxPage = () => {
   const [newComments, setNewComments] = useState([]);
   const [newJiraComments, setNewJiraComments] = useState([]);
   const [idForPopup, setIdForPopup] = useState(null);
+  const [isCompleteButtonEnabled, setIsCompleteButtonEnabled] = useState(false);
+  const [checkboxData, setCheckboxData] = useState([]);
+  const [troubleshootText, setTroubleshootText] = useState("");
+  const [isTroubleshootSuccessful, setIsTroubleshootSuccessful] =
+    useState(false);
+  const [tamPayload, setTamPayload] = useState({});
 
   const handleTaskSelect = async (task) => {
     setSelectedTask(null); // Reset first to force re-render
@@ -35,7 +41,7 @@ const InboxPage = () => {
       await keycloak.updateToken(60);
       const token = keycloak.token;
 
-      const response = await fetch(`${base_url}/${task.id}/variables/search`, {
+      const response = await fetch(`${base_url}/${task.id}/variable/search`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -130,6 +136,55 @@ const InboxPage = () => {
     setNewComments(updatedComments);
   };
 
+  const headers = {
+    Authorization: `Bearer ${keycloak?.token}`,
+    "Content-Type": "application/json",
+  };
+
+  const handleUnClaimTask = async (taskId) => {
+    let response = await fetch(
+      `http://localhost:7259/api/incident/v1/task/${taskId}/assignee`,
+      {
+        method: "DELETE",
+        headers,
+      }
+    );
+
+    if (!response.ok) throw new Error("Failed to unclaim the task");
+
+    Swal.fire({
+      title: "Success!",
+      text: "This Task has been Unclaimed",
+      icon: "success",
+      confirmButtonText: "OK",
+    }).then((result) => {});
+  };
+
+  const handleClaimTask = async (taskId) => {
+    let response = await fetch(
+      `http://localhost:7259/api/incident/v1/task/${taskId}/assign`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${keycloak?.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          assignee: keycloak.tokenParsed.preferred_username,
+        }),
+      }
+    );
+
+    if (!response.ok) throw new Error("Failed to claim the task");
+
+    Swal.fire({
+      title: "Success!",
+      text: "This Task has been Claimed",
+      icon: "success",
+      confirmButtonText: "OK",
+    }).then((result) => {});
+  };
+
   const columns = [
     {
       field: "serialNo",
@@ -210,7 +265,6 @@ const InboxPage = () => {
             }}
             onClick={(e) => {
               e.stopPropagation();
-              console.log("params", params);
               //params.api.setRowId(params.id);
               setIdForPopup(idForPopup === params.id ? null : params.id);
             }}
@@ -256,11 +310,19 @@ const InboxPage = () => {
                   cursor: "pointer",
                 }}
                 onClick={() => {
-                  /* Add claim logic here */
+                  if (
+                    params?.row?.assignee ===
+                    keycloak?.tokenParsed?.preferred_username
+                  )
+                    handleUnClaimTask(params.row.id);
+                  else handleClaimTask(params.row.id);
                 }}
               >
                 <IoMdCheckmarkCircleOutline />{" "}
-                {params?.row?.assigne === "demo" ? "Claim" : "Assign to me"}
+                {params?.row?.assignee ===
+                keycloak?.tokenParsed?.preferred_username
+                  ? "Unclaim"
+                  : "Claim"}
               </button>
             </div>
           )}
@@ -475,7 +537,10 @@ const InboxPage = () => {
             </div>
             <DataGrid
               rows={tasks
-                ?.filter((task) => task.assigne === "demo")
+                ?.filter(
+                  (task) =>
+                    task.assignee === keycloak?.tokenParsed?.preferred_username
+                )
                 .map((task) => ({
                   id: task.id,
                   name: task.name,
@@ -547,7 +612,7 @@ const InboxPage = () => {
             </div>
             <DataGrid
               rows={tasks
-                .filter((task) => task.assigne === null)
+                .filter((task) => !task.assignee)
                 .map((task) => ({
                   id: task.id,
                   name: task.name,
@@ -615,6 +680,26 @@ const InboxPage = () => {
               onClaimChange={handleClaimChange}
               onAddJiraComment={onAddJiraComment}
               onAddComment={onAddComment}
+              handleEnableSUbmitButton={(
+                checkboxData,
+                troubleshootText,
+                isTroubleshootSuccessful
+              ) => {
+                if (selectedTask.taskDefinitionId === "Task_SRE_Team") {
+                  setIsCompleteButtonEnabled(true);
+                  setCheckboxData(checkboxData);
+                  setTroubleshootText(troubleshootText);
+                  setIsTroubleshootSuccessful(isTroubleshootSuccessful);
+                }
+              }}
+              handleTamPayload={(tamPayload) => {
+                if (
+                  selectedTask.taskDefinitionId === "Task_Orchestration_By_TAM"
+                ) {
+                  setIsCompleteButtonEnabled(true);
+                  setTamPayload(tamPayload);
+                }
+              }}
             />
           ) : (
             <p className="text-center mt-4">Select a task to view details</p>
@@ -626,14 +711,53 @@ const InboxPage = () => {
       {selectedTask && selectedTask.assignee && (
         <button
           className="floating-action-btn"
+          disabled={!isCompleteButtonEnabled}
+          style={{
+            backgroundColor: isCompleteButtonEnabled ? "#8529cd" : "#ccc",
+            color: "white",
+            borderRadius: "6px",
+            fontSize: "16px",
+          }}
           onClick={async () => {
             if (!selectedTask?.id) return;
 
-            const Payload = {
-              action: "complete",
-              JiraComments: newJiraComments || [],
-              comments: newComments || [],
-            };
+            let payload = {};
+            const incidentData =
+              selectedTask?.variables?.find(
+                (data) => data.name === "incidentData"
+              ) || {};
+
+            if (selectedTask.taskDefinitionId === "Task_Orchestration_By_TAM") {
+              payload = tamPayload;
+            } else {
+              payload = {
+                incidentData: {
+                  errorDetails: {
+                    title: JSON.parse(incidentData?.previewValue)?.errorDetails
+                      ?.title,
+                    description: JSON.parse(incidentData?.previewValue)
+                      ?.errorDetails?.description,
+                  },
+                  investigationDetails: JSON.parse(incidentData?.previewValue)
+                    ?.investigationDetails,
+                  playBook: checkboxData,
+                  successfulTroubleshoot: isTroubleshootSuccessful,
+                  troubleshootInfo: troubleshootText || "",
+                },
+                userInfo: {
+                  username: keycloak?.tokenParsed?.preferred_username || "",
+                  email: keycloak?.tokenParsed?.email || "",
+                },
+              };
+            }
+
+            console.log("Payload", payload);
+
+            // const Payload = {
+            //   action: "complete",
+            //   JiraComments: newJiraComments || [],
+            //   comments: newComments || [],
+            // };
 
             setSending(true);
 
@@ -641,14 +765,14 @@ const InboxPage = () => {
               const token = keycloak.token; // Adjust if you use another storage
 
               const response = await fetch(
-                `${complete_url}/${selectedTask?.id}/completion`,
+                `${complete_url}/task/${selectedTask?.id}/complete`,
                 {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${token}`,
                   },
-                  body: JSON.stringify(Payload),
+                  body: JSON.stringify(payload),
                 }
               );
 

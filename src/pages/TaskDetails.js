@@ -1,7 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Card, CardHeader, Col, Row } from "react-bootstrap";
-import ToggleButton from "@mui/material/ToggleButton";
-import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import "./styles.css";
 import JiraBoard from "./TAB_Content/JiraBoard";
 import SRE_Details from "./TAB_Content/SRE_Details";
@@ -15,12 +13,15 @@ import { AuthContext } from "../AuthProvider";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 const TaskDetails = ({
   selectedTask: initialSelectedTask,
   onClaimChange,
   onAddJiraComment,
   onAddComment,
+  handleEnableSUbmitButton,
+  handleTamPayload,
 }) => {
   const { keycloak } = useContext(AuthContext);
 
@@ -41,12 +42,14 @@ const TaskDetails = ({
       setSelectedTask(initialSelectedTask);
       setTabs(initialSelectedTask.tabs || []);
       setIsClaimed(initialSelectedTask.assignee || false);
-      console.log("inisde taskdetails");
-      console.log(initialSelectedTask);
       let tabs = [];
       if (initialSelectedTask != null) {
         if (initialSelectedTask.taskDefinitionId === "Task_SRE_Team") {
-          tabs = ["SRE", "Pager", "Jira"];
+          tabs = ["SRE"];
+        } else if (
+          initialSelectedTask.taskDefinitionId === "Task_Orchestration_By_TAM"
+        ) {
+          tabs = ["SRE", "TAM", "Jira"];
         }
       }
       initialSelectedTask.tabs = tabs;
@@ -87,7 +90,7 @@ const TaskDetails = ({
         if (!newClaimStatus) {
           // UNCLAIM TASK
           response = await fetch(
-            `http://localhost:7259/api/tasklist/v1/tasks/${selectedTask.id}/assignee`,
+            `http://localhost:7259/api/incident/v1/task/${selectedTask.id}/assignee`,
             {
               method: "DELETE",
               headers,
@@ -110,7 +113,7 @@ const TaskDetails = ({
         } else {
           // CLAIM TASK
           response = await fetch(
-            `http://localhost:7259/api/tasklist/v1/tasks/${selectedTask.id}/assign`,
+            `http://localhost:7259/api/incident/v1/task/${selectedTask.id}/assign`,
             {
               method: "POST",
               headers: {
@@ -197,6 +200,8 @@ const TaskDetails = ({
         selectedTask={selectedTask}
         activeTab="SRE"
         formData={formResponses["SRE"]}
+        isClaimed={isClaimed}
+        handleEnableSUbmitButton={handleEnableSUbmitButton}
       />
     ),
     TAM: () => (
@@ -204,6 +209,7 @@ const TaskDetails = ({
         selectedTask={selectedTask}
         activeTab="TAM"
         formData={formResponses["TAM"]}
+        handleTamPayload={handleTamPayload}
       />
     ),
     BMAaS: () => (
@@ -253,6 +259,17 @@ const TaskDetails = ({
           </div>
         </Col>
         <Col md={2} className="text-end">
+          <button
+            className="btn"
+            onClick={() => window.history.back()}
+            style={{
+              backgroundColor: "transparent",
+              border: "none",
+              color: "#8529cd",
+            }}
+          >
+            <IoMdArrowRoundBack />
+          </button>{" "}
           <button
             className={`btn`}
             onClick={handleClaimToggle}

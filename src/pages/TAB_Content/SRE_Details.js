@@ -1,30 +1,47 @@
-import React, { useEffect, useState } from "react";
-import {
-  FaChevronLeft,
-  FaChevronRight,
-  FaTrashAlt,
-  FaUserCircle,
-} from "react-icons/fa";
+import React, { use, useEffect, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { Card, CardBody, Col, Row, Breadcrumb } from "react-bootstrap";
+import { Card, CardBody, Col, Row } from "react-bootstrap";
 import "../styles.css";
 import SampleData from "./SampleData.json";
 
 import jsonData from "./jsonData.json";
-import { CardHeader } from "@mui/material";
 
 const SRE_Details = ({
   selectedTask: initialSelectedTask,
   activeTab: selectedTab,
   formData,
+  isClaimed,
+  handleEnableSUbmitButton,
 }) => {
+  console.log("initialSelectedTask", initialSelectedTask?.variables);
   const [selectedProject, setSelectedProject] = useState({});
   const [data, setData] = useState(jsonData);
   const [suggestions, setSuggestions] = useState([]);
   const [activeTab, setActiveTab] = useState("Suggestions");
+  const [checkboxStates, setCheckboxStates] = useState({});
+  const [troubleshootText, setTroubleshootText] = useState("");
+  const [isTroubleshootSuccessful, setIsTroubleshootSuccessful] =
+    useState(false);
+  const [incidentData, setIncidentData] = useState(
+    initialSelectedTask?.variables?.find(
+      (data) => data.name === "incidentData"
+    ) || {}
+  );
+  const [bareData, setBareData] = useState(
+    initialSelectedTask?.variables?.find(
+      (data) => data.name === "bareMetalDetails"
+    ) || {}
+  );
+  const [relatedJiraTickets, setRelatedJiraTickets] = useState(
+    initialSelectedTask?.variables?.find(
+      (data) => data.name === "relatedJiraTickets"
+    ) || {}
+  );
+
+  console.log("incidentData", incidentData);
+  console.log("bareData", bareData);
 
   const tabs = ["All", "Suggestions"];
-
   useEffect(() => {
     const matchedProject =
       data.find((item) => item.id === initialSelectedTask?.id) || {};
@@ -36,7 +53,33 @@ const SRE_Details = ({
     setSuggestions(filteredData);
   }, [initialSelectedTask, selectedTab]);
 
+  useEffect(() => {
+    if (incidentData) {
+      setTroubleshootText(
+        JSON.parse(incidentData?.previewValue)?.troubleshootInfo || ""
+      );
+      setIsTroubleshootSuccessful(
+        JSON.parse(incidentData?.previewValue)?.successfulTroubleshoot || false
+      );
+      setCheckboxStates(JSON.parse(incidentData?.previewValue)?.playBook || {});
+    }
+  }, [incidentData]);
+
   const isFormSubmitted = !!formData;
+
+  useEffect(() => {
+    if (
+      Object.keys(checkboxStates).length > 0 ||
+      troubleshootText !== "" ||
+      isTroubleshootSuccessful
+    ) {
+      handleEnableSUbmitButton(
+        checkboxStates,
+        troubleshootText,
+        isTroubleshootSuccessful
+      );
+    }
+  }, [checkboxStates, troubleshootText, isTroubleshootSuccessful]);
 
   return (
     <>
@@ -98,47 +141,124 @@ const SRE_Details = ({
         >
           <Card
             className="mb-2 w-100 h-40 p-2 card-shadow border-0"
-            style={{ height: "37%", borderRadius: "0px" }}
+            style={{ height: "auto", borderRadius: "0px" }}
           >
             <div style={{ fontWeight: "bold" }}>Error Description</div>
             <CardBody>
               <p>
-                Application failed to connect to the database due to a timeout.
-                Suspected root cause is an unstable network connection between
-                the app server and the database cluster. Impacted users are
-                unable to retrieve or submit data. Issue started at
-                approximately 10:12 AM IST and is intermittent.
+                {
+                  JSON.parse(incidentData?.previewValue)?.errorDetails
+                    ?.description
+                }
               </p>
             </CardBody>
           </Card>
           <Card
             className="mb-2 w-100 h-40 p-2 card-shadow border-0"
-            style={{ height: "36%", borderRadius: "0px" }}
+            style={{ height: "auto", borderRadius: "0px" }}
           >
             <div style={{ fontWeight: "bold" }}>Investigation Details</div>
             <CardBody>
-              <p>
-                Initial investigation by the SRE team indicates intermittent
-                packet loss between the application server and the database
-                host. Network traces show latency spikes around the time of
-                failure. No recent deployment or configuration changes noted.
-                Awaiting confirmation from the network team for further
-                analysis.
-              </p>
+              <div
+                style={{
+                  display: "flex",
+                  gap: "10px",
+                  flexDirection: "column",
+                  maxHeight: "400px",
+                  overflowY: "auto",
+                }}
+              >
+                <table className="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col">Key</th>
+                      <th scope="col">Value</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {JSON.parse(bareData.value)?.keyValues?.map(
+                      ({ key, value }, index) => (
+                        <tr key={index}>
+                          <td>{key}</td>
+                          <td>{value}</td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </table>
+                <table className="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col">Serial No.</th>
+                      <th scope="col">Self</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {JSON.parse(relatedJiraTickets?.previewValue)?.issues.map(
+                      (issue, index) => (
+                        <tr key={index}>
+                          <td>{index + 1}</td>
+                          <td>
+                            <a
+                              href={issue.self}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {issue.key}
+                            </a>
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              <div></div>
             </CardBody>
           </Card>
           <Card
             className="mb-2 w-100 h-20 p-2 card-shadow border-0"
-            style={{ height: "24%", borderRadius: "0px" }}
+            style={{ height: "auto", borderRadius: "0px" }}
           >
             <div style={{ fontWeight: "bold" }}>Troubleshooting</div>
             <CardBody>
               <p>
-                Restarted the affected application pods and flushed DNS cache.
-                Temporarily rerouted traffic to a healthy database replica.
-                Monitored logs and metrics using Prometheus and Grafana for
-                anomalies. Engaged network team to run deeper diagnostics on the
-                connectivity layer.
+                <div className="d-flex align-items-center mb-2">
+                  <input
+                    type="checkbox"
+                    style={{
+                      accentColor: "rgb(133, 41, 205)",
+                      marginRight: "8px",
+                    }}
+                    value={isTroubleshootSuccessful}
+                    disabled={
+                      !isClaimed ||
+                      initialSelectedTask.taskDefinitionId ===
+                        "Task_Orchestration_By_TAM"
+                    }
+                    onChange={(e) => {
+                      setIsTroubleshootSuccessful(e.target.checked);
+                    }}
+                  />
+                  <label className="mb-0">Troubleshoot successful?</label>
+                </div>
+                <textarea
+                  className="form-control"
+                  rows="4"
+                  disabled={
+                    !isClaimed ||
+                    initialSelectedTask.taskDefinitionId ===
+                      "Task_Orchestration_By_TAM"
+                  }
+                  placeholder="Enter investigation details here..."
+                  defaultValue=""
+                  style={{ resize: "none" }}
+                  value={troubleshootText}
+                  onChange={(e) => {
+                    setTroubleshootText(e.target.value);
+                  }}
+                />
               </p>
             </CardBody>
           </Card>
@@ -153,89 +273,64 @@ const SRE_Details = ({
           >
             <div style={{ fontWeight: "bold" }}>Play Book</div>
             <CardBody>
-              {/* <ul style={{ paddingLeft: "20px" }}>
-                <li style={{ marginTop: "5px" }}>
-                  Verify the alert source and confirm the error is reproducible.
-                </li>
-                <li style={{ marginTop: "5px" }}>
-                  Check application logs for exceptions or timeouts related to
-                  the database.
-                </li>
-                <li style={{ marginTop: "5px" }}>
-                  Validate connectivity from the application server to the
-                  database (ping/telnet).
-                </li>
-                <li style={{ marginTop: "5px" }}>
-                  Review metrics (CPU, memory, latency) on both app and DB nodes
-                  via monitoring tools.
-                </li>
-                <li style={{ marginTop: "5px" }}>
-                  Inspect recent deployment or infrastructure changes in the
-                  last 24 hours.
-                </li>
-                <li style={{ marginTop: "5px" }}>
-                  Restart impacted services or pods to see if the issue is
-                  transient.
-                </li>
-                <li style={{ marginTop: "5px" }}>
-                  Engage the network team to trace any packet loss or latency
-                  issues.
-                </li>
-                <li style={{ marginTop: "5px" }}>
-                  Failover to a replica database instance if supported and
-                  necessary.
-                </li>
-                <li style={{ marginTop: "5px" }}>
-                  Communicate interim status and workarounds to stakeholders and
-                  support teams.
-                </li>
-                <li style={{ marginTop: "5px" }}>
-                  Document the root cause, resolution steps, and preventive
-                  actions in the incident tracker.
-                </li>
-              </ul> */}
               <div>
-                {[
-                  "Verify the alert source and confirm the error is reproducible.",
-                  "Check application logs for exceptions or timeouts related to the database.",
-                  "Validate connectivity from the application server to the database (ping/telnet).",
-                  "Review metrics (CPU, memory, latency) on both app and DB nodes via monitoring tools.",
-                  "Inspect recent deployment or infrastructure changes in the last 24 hours.",
-                  "Restart impacted services or pods to see if the issue is transient.",
-                  "Engage the network team to trace any packet loss or latency issues.",
-                  "Failover to a replica database instance if supported and necessary.",
-                  "Communicate interim status and workarounds to stakeholders and support teams.",
-                  "Document the root cause, resolution steps, and preventive actions in the incident tracker.",
-                ].map((text, index) => (
-                  <div
-                    key={index}
-                    style={{
-                      marginTop: "10px",
-                      display: "flex",
-                      alignItems: "start",
-                      borderBottom: "1px solid #ccc",
-                      paddingBottom: "5px",
-                    }}
-                  >
-                    <input
-                      type="checkbox"
-                      id={`checkbox-${index}`}
+                {JSON.parse(incidentData?.previewValue)
+                  ?.playBook.split(",")
+                  .map((text, index) => (
+                    <div
+                      key={index}
                       style={{
-                        accentColor: "rgb(133, 41, 205)",
-                        marginRight: "8px",
-                        marginTop: "5px",
-                        cursor: "pointer",
+                        marginTop: "10px",
+                        display: "flex",
+                        alignItems: "start",
+                        borderBottom: "1px solid #ccc",
+                        paddingBottom: "5px",
                       }}
-                      checked={index < 5} // Example: first 5 items checked
-                    />
-                    <label
-                      htmlFor={`checkbox-${index}`}
-                      style={{ cursor: "pointer", margin: 0 }}
                     >
-                      {text}
-                    </label>
-                  </div>
-                ))}
+                      <input
+                        type="checkbox"
+                        id={`checkbox-${index}`}
+                        style={{
+                          accentColor: "rgb(133, 41, 205)",
+                          marginRight: "8px",
+                          marginTop: "5px",
+                          cursor: "pointer",
+                        }}
+                        disabled={
+                          !isClaimed ||
+                          initialSelectedTask.taskDefinitionId ===
+                            "Task_Orchestration_By_TAM"
+                        }
+                        onChange={(e) => {
+                          const checkboxData = document.querySelectorAll(
+                            'input[type="checkbox"]:not([value])'
+                          );
+                          const checkboxStates = Array.from(checkboxData)
+                            .map((checkbox) => {
+                              const label =
+                                checkbox.nextElementSibling.textContent.trim();
+                              return `${label}:${checkbox.checked}`;
+                            })
+                            .join(",");
+                          setCheckboxStates(checkboxStates);
+                        }}
+                        checked={
+                          !isClaimed ||
+                          initialSelectedTask.taskDefinitionId ===
+                            "Task_Orchestration_By_TAM"
+                            ? text.includes(":") &&
+                              text.split(":")[1] === "true"
+                            : null
+                        }
+                      />
+                      <label
+                        htmlFor={`checkbox-${index}`}
+                        style={{ cursor: "pointer", margin: 0 }}
+                      >
+                        {text.includes(":") ? text.split(":")[0] : text}
+                      </label>
+                    </div>
+                  ))}
               </div>
             </CardBody>
           </Card>

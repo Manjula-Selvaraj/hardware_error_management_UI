@@ -92,6 +92,19 @@ h3 {
     margin-left: 2px;
 }
 
+button {
+    padding: 5px 14px;
+    padding-top: 7px;
+    font-size: inherit;
+    text-transform: capitalize;
+    border: none;
+    outline: none;
+    border-radius: 3px;
+    background-color: transparent;
+    color: #666;
+    cursor: pointer;
+}
+
 .content .dsc .buttonset button {
     padding: 5px 14px;
     padding-top: 7px;
@@ -107,6 +120,11 @@ h3 {
 
 .content .dsc .buttonset button:hover {
     color: #000;
+}
+
+.btn-primary {
+    background-color: #8529cd;
+    color: white;
 }
 
 .content .dsc .buttonset .btn-primary {

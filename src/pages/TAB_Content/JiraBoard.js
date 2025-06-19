@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   FaChevronLeft,
   FaChevronRight,
@@ -6,6 +6,7 @@ import {
   FaUserCircle,
 } from "react-icons/fa";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { AuthContext } from "../../AuthProvider";
 import {
   Card,
   CardBody,
@@ -26,8 +27,54 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const [activeTab, setActiveTab] = useState("Comments");
+  const [jiraIssueInfo, setJiraIssueInfo] = useState({});
+  const [jiraComments, setJiraComments] = useState([]);
+  const [relatedJiraTickets, setRelatedJiraTickets] = useState([]);
+  const [bareData, setBareData] = useState(
+    initialSelectedTask?.variables?.find(
+      (data) => data.name === "bareMetalDetails"
+    ) || {}
+  );
+
+  console.log("comments", comments);
+
+  // Add new state for watches
+  const [isWatching, setIsWatching] = useState(false);
+  const [watchCount, setWatchCount] = useState(0);
+
+  const { keycloak } = useContext(AuthContext);
 
   const tabs = ["All", "Comments"];
+
+  useEffect(() => {
+    const jiraInfo = JSON.parse(
+      initialSelectedTask?.variables?.find(
+        (data) => data.name === "jiraIssueInfo"
+      )?.value || "{}"
+    );
+
+    setJiraIssueInfo(jiraInfo);
+    setJiraComments(
+      JSON.parse(
+        initialSelectedTask?.variables?.find(
+          (data) => data.name === "jiraComments"
+        )?.value || "[]"
+      )
+    );
+    setRelatedJiraTickets(
+      JSON.parse(
+        initialSelectedTask?.variables?.find(
+          (data) => data.name === "relatedJiraTickets"
+        )?.value || "[]"
+      )
+    );
+
+    // Set watch information
+    if (jiraInfo?.fields?.watches) {
+      setIsWatching(jiraInfo.fields.watches.isWatching);
+      setWatchCount(jiraInfo.fields.watches.watchCount);
+    }
+  }, [initialSelectedTask]);
 
   useEffect(() => {
     try {
@@ -39,7 +86,7 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
       if (!matchedProject) {
         console.warn("No matching project found for selected task.");
         setSelectedProject({});
-        setComments([]);
+        // setComments([]);
         return;
       }
 
@@ -49,7 +96,7 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
     } catch (error) {
       console.error("Error processing jsonData:", error);
       setSelectedProject({});
-      setComments([]);
+      // setComments([]);
     }
   }, [initialSelectedTask, data]);
 
@@ -106,11 +153,51 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
     setComment(e.target.value);
   };
 
-  const handleSaveComment = (comment) => {
+  const handleSaveComment = async (comment) => {
     const newComments = [comment, ...comments];
     setComments(newComments);
     setComment("");
     updateData(newComments);
+
+    const payload = {
+      body: {
+        type: "doc",
+        version: 1,
+        content: [
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: comment,
+              },
+            ],
+          },
+        ],
+      },
+    };
+
+    try {
+      await keycloak.updateToken(60);
+      const token = keycloak.token;
+      const response = await fetch(
+        `http://localhost:7259/api/incident/v1/jira/comment/issueIdOrKey/${"SCRUM-30"}?email=${
+          keycloak?.tokenParsed?.email
+        }`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const data = await response.json();
+    } catch (error) {
+      console.error("Failed to fetch tasks:", error);
+    }
 
     // Notify parent
     if (onCommentsUpdate) {
@@ -123,28 +210,79 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
       <Col md={8} className="text-start">
         {/* Breadcrumbs */}
         <div>
-          <div class="breadcrumbs">
-            <p>item1</p>
-            <p>item2</p>
-            <p>item1</p>
-            <p>item2</p>
+          <div className="breadcrumbs d-flex align-items-center gap-2">
+            <p>{jiraIssueInfo?.fields?.project?.key}</p>
+            <p className="d-flex align-items-center">
+              <img
+                style={{ width: "16px", height: "16px", marginRight: "4px" }}
+                src={
+                  "https://api.atlassian.com/ex/jira/b3efd337-1a82-4f6f-b5e8-41458b3e04cc/rest/api/3/universal_avatar/view/type/project/avatar/10417?size=xsmall"
+                }
+              />
+              {jiraIssueInfo?.fields?.project?.name}
+            </p>
+            <p className="d-flex align-items-center">
+              <img
+                style={{ width: "16px", height: "16px", marginRight: "4px" }}
+                src={jiraIssueInfo?.fields?.issuetype?.iconUrl}
+                alt="Issue type"
+              />
+              {jiraIssueInfo?.fields?.issuetype?.name}
+            </p>
+            <p>{jiraIssueInfo?.key}</p>
           </div>
         </div>
         <div class="content">
-          <h2>Welcome to My Page</h2>
-          <div class="extra">
-                <div class="extra_item">to do v</div>
-                <div class="add_item"><span>+</span> add</div>
+          {/* {jiraIssueInfo?.fields?.description && (
+            <h2>
+              {
+                JSON.parse(
+                  jiraIssueInfo?.fields?.description?.content[0]?.content[0]
+                    ?.text
+                )?.errorDetails?.title
+              }
+            </h2>
+          )} */}
+          {/* <div class="extra">
+            <div class="extra_item">
+              {jiraIssueInfo?.fields?.statusCategory?.name?.toLowerCase() ||
+                "todo"}
             </div>
+            <div class="add_item">
+              <span>+</span> add
+            </div>
+          </div> */}
           <div class="dsc">
             <h3>description</h3>
-            <textarea placeholder="Add a description"></textarea>
-            <div class="buttonset">
+            {/* {console.log(
+              JSON.parse(
+                jiraIssueInfo?.fields?.description?.content[0]?.content[0]?.text
+              )?.errorDetails?.description
+            )} */}
+            <table className="table table-bordered">
+              <thead>
+                <tr>
+                  <th scope="col">Key</th>
+                  <th scope="col">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                {JSON.parse(bareData.value)?.keyValues?.map(
+                  ({ key, value }, index) => (
+                    <tr key={index}>
+                      <td>{key}</td>
+                      <td>{value}</td>
+                    </tr>
+                  )
+                )}
+              </tbody>
+            </table>
+            {/* <div class="buttonset">
               <button class="btn-primary">Save</button>
               <button>cancel</button>
-            </div>
+            </div> */}
           </div>
-          <div class="confluence">
+          {/* <div class="confluence">
             <div class="c_top">
               <h3>
                 Confluence content <span class="info">i</span>
@@ -155,45 +293,86 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
               <span class="t_name">📘 product requirement</span>
               <button class="t_btn">try template</button>
             </div>
-          </div>
+          </div> */}
           <div class="activity">
-                <h3>activity</h3>
-                <div class="a_top">
-                    <div class="activity_set">
-                        <div class="activity_item">All</div>
-                        <div class="activity_item active">comments</div>
-                        <div class="activity_item">history</div>
-                        <div class="activity_item">work log</div>
-                    </div>
-                    <button>⬇️</button>
-                </div>
-                <div class="add_comment">
-                    <img src="https://placehold.co/20" class="profile_pic" />
-                    <div class="comment_box">
-                        <textarea placeholder="Add a comment..."></textarea>
-                        <p><strong>Pro tip:</strong> press <span class="key">M</span> to comment</p>
-                    </div>
-
-                </div>
-                <div class="comment_list">
-                    <div class="comment_item">
-                        <img src="https://placehold.co/30" class="profile_pic" />
-                        <div class="comment_content">
-                            <h4 class="commentor">Victor deb</h4>
-                            <p class="date">May 5, 2025 at 1:15 PM</p>
-                            <p class="comment_text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam,
-                                voluptatum.</p>
-                            <div class="comment_actions">
-                                <button class="action_item">↪</button>
-                                <button class="action_item">👍</button>
-                                <button class="action_item">🙂</button>
-                                <button class="action_item">📝</button>
-                                <button class="more">...</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <h3>activity</h3>
+            <div class="a_top">
+              <div class="activity_set">
+                <div class="activity_item">All</div>
+                <div class="activity_item active">comments</div>
+                <div class="activity_item">history</div>
+                <div class="activity_item">work log</div>
+              </div>
+              <button>⬇️</button>
             </div>
+            <div class="add_comment">
+              <img
+                src={
+                  "https://secure.gravatar.com/avatar/63ebe867c4e976a1d9eb5c6f5f56e1c1?d=https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RD-3.png"
+                }
+                class="profile_pic"
+              />
+              <div class="comment_box">
+                <textarea
+                  placeholder="Add a comment..."
+                  value={comment}
+                  onChange={handleCommentChange}
+                ></textarea>
+                <p>
+                  <strong>Pro tip:</strong> press <span class="key">M</span> to
+                  comment
+                </p>
+                <div
+                  className="buttonset"
+                  style={{ marginTop: "10px", display: "flex", gap: "10px" }}
+                >
+                  <button
+                    class="btn-primary"
+                    onClick={(e) => handleSaveComment(comment)}
+                    disabled={!comment.trim()}
+                  >
+                    Save
+                  </button>
+                  <button>Cancel</button>
+                </div>
+              </div>
+            </div>
+            <div class="comment_list" style={{ marginTop: "40px" }}>
+              {comments?.map((item, index) => {
+                const date = new Date();
+                date.setMinutes(date.getMinutes() + index);
+                return (
+                  <div class="comment_item" key={index}>
+                    <img
+                      src={
+                        "https://secure.gravatar.com/avatar/63ebe867c4e976a1d9eb5c6f5f56e1c1?d=https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RD-3.png"
+                      }
+                      alt="Reporter Avatar"
+                      style={{
+                        width: "16px",
+                        height: "16px",
+                        marginRight: "4px",
+                      }}
+                    />
+                    <div class="comment_content">
+                      <h4 class="commentor">
+                        {jiraIssueInfo?.fields?.creator.displayName}
+                      </h4>
+                      <p class="date">{date.toLocaleString()}</p>
+                      <p class="comment_text">{item}</p>
+                      <div class="comment_actions">
+                        <button class="action_item">↪</button>
+                        <button class="action_item">👍</button>
+                        <button class="action_item">🙂</button>
+                        <button class="action_item">📝</button>
+                        <button class="more">...</button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
         <div className="mx-1 mt-1 d-none">
           <Breadcrumb>
@@ -266,6 +445,7 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
                     Cancel
                   </button>
                   <button
+                    disabled={!comment.trim()}
                     className="btn btn-outline-success btn-sm border-none"
                     aria-label="Save comment"
                     onClick={(e) => handleSaveComment(comment)}
@@ -308,8 +488,7 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
           className="form-select mb-3"
           aria-label="Select status"
           value={
-            selectedProject?.fields?.statusCategory?.name?.toLowerCase() ||
-            "todo"
+            jiraIssueInfo?.fields?.statusCategory?.name?.toLowerCase() || "todo"
           }
           style={{ width: "120px" }}
         >
@@ -328,8 +507,39 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
               {selectedProject?.fields?.assignee || "None"}
             </p>
             <p>
+              <strong>Reporter:</strong>{" "}
+              <img
+                src={
+                  "https://secure.gravatar.com/avatar/63ebe867c4e976a1d9eb5c6f5f56e1c1?d=https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RD-3.png"
+                }
+                alt="Reporter Avatar"
+                style={{ width: "16px", height: "16px", marginRight: "4px" }}
+              />
+              {jiraIssueInfo?.fields?.reporter.displayName || "None"}
+            </p>
+            <p>
+              <strong>Creator:</strong>{" "}
+              <img
+                src={
+                  "https://secure.gravatar.com/avatar/63ebe867c4e976a1d9eb5c6f5f56e1c1?d=https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RD-3.png"
+                }
+                alt="Reporter Avatar"
+                style={{ width: "16px", height: "16px", marginRight: "4px" }}
+              />
+              {jiraIssueInfo?.fields?.creator.displayName || "None"}
+            </p>
+            <p>
               <strong>Labels:</strong>{" "}
-              {selectedProject?.fields?.labels?.join(", ") || "None"}
+              {jiraIssueInfo?.fields?.labels?.join(", ") || "None"}
+            </p>{" "}
+            <p>
+              <strong>Priority:</strong>{" "}
+              {jiraIssueInfo?.fields?.priority?.name || "None"}
+              <img
+                src={jiraIssueInfo?.fields?.priority?.iconUrl}
+                alt="Priority Icon"
+                style={{ width: "16px", height: "16px", marginRight: "4px" }}
+              />
             </p>
             <p>
               <strong>Parent:</strong>{" "}
@@ -352,6 +562,14 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
             </p>
           </CardBody>
         </Card>
+        <div style={{ marginTop: "10px", fontSize: "14px" }}>
+          Created at:{" "}
+          <span>
+            {new Date(
+              jiraIssueInfo?.fields?.created || "None"
+            ).toLocaleString()}
+          </span>
+        </div>
       </Col>
     </Row>
   );

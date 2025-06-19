@@ -7,12 +7,21 @@ import KeycloakLoginPage from "./pages/KeycloakLoginPage";
 import ProtectedRoute from "./pages/ProtectedRoute";
 import Unauthorized from "./pages/Unauthorized";
 import GroupCheckRoute from "./pages/GroupCheckRoute ";
+import AdminPage from "./pages/AdminPage";
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<KeycloakLoginPage />} />
       <Route path="/header" element={<Header />} />
       <Route path="/groupCheck" element={<GroupCheckRoute />} />
+      <Route
+        path="/adminView"
+        element={
+          <ProtectedRoute allowedRoles={["Tasklist"]}>
+            <AdminPage />
+          </ProtectedRoute>
+        }
+      />
 
       <Route
         path="/tasklist"
@@ -23,7 +32,6 @@ const AppRoutes = () => {
         }
       />
       <Route path="/unauthorized" element={<Unauthorized />} />
-
     </Routes>
   );
 };
