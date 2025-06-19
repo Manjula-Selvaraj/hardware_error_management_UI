@@ -181,9 +181,7 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
       await keycloak.updateToken(60);
       const token = keycloak.token;
       const response = await fetch(
-        `http://localhost:7259/api/incident/v1/jira/comment/issueIdOrKey/${"SCRUM-30"}?email=${
-          keycloak?.tokenParsed?.email
-        }`,
+        `http://localhost:7259/api/incident/v1/jira/comment/issueIdOrKey/${jiraIssueInfo?.key}?email=${keycloak?.tokenParsed?.email}`,
         {
           method: "POST",
           headers: {

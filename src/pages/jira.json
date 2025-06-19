@@ -1,0 +1,152 @@
+{
+    "expand": "renderedFields,names,schema,operations,editmeta,changelog,versionedRepresentations",
+    "id": "10092",
+    "self": "https://api.atlassian.com/ex/jira/b3efd337-1a82-4f6f-b5e8-41458b3e04cc/rest/api/3/issue/10092",
+    "key": "SCRUM-30",
+    "fields": {
+      "statuscategorychangedate": "2025-06-18T18:52:33.463+0530",
+      "issuetype": {
+        "self": "https://api.atlassian.com/ex/jira/b3efd337-1a82-4f6f-b5e8-41458b3e04cc/rest/api/3/issuetype/10003",
+        "id": "10003",
+        "description": "Created by Jira Agile - do not edit or delete. Issue type for a user story.",
+        "iconUrl": "https://api.atlassian.com/ex/jira/b3efd337-1a82-4f6f-b5e8-41458b3e04cc/rest/api/2/universal_avatar/view/type/issuetype/avatar/10315?size=medium",
+        "name": "Story",
+        "subtask": false,
+        "avatarId": 10315,
+        "entityId": "11c5aea8-df61-455d-b68b-c2a24907a214",
+        "hierarchyLevel": 0
+      },
+      "components": [],
+      "project": {
+        "avatarUrls": {
+          "16x16": "https://api.atlassian.com/ex/jira/b3efd337-1a82-4f6f-b5e8-41458b3e04cc/rest/api/3/universal_avatar/view/type/project/avatar/10417?size=xsmall",
+          "24x24": "https://api.atlassian.com/ex/jira/b3efd337-1a82-4f6f-b5e8-41458b3e04cc/rest/api/3/universal_avatar/view/type/project/avatar/10417?size=small",
+          "32x32": "https://api.atlassian.com/ex/jira/b3efd337-1a82-4f6f-b5e8-41458b3e04cc/rest/api/3/universal_avatar/view/type/project/avatar/10417?size=medium",
+          "48x48": "https://api.atlassian.com/ex/jira/b3efd337-1a82-4f6f-b5e8-41458b3e04cc/rest/api/3/universal_avatar/view/type/project/avatar/10417"
+        },
+        "id": "10000",
+        "key": "SCRUM",
+        "name": "JIRA-POC",
+        "self": "https://api.atlassian.com/ex/jira/b3efd337-1a82-4f6f-b5e8-41458b3e04cc/rest/api/3/project/10000",
+        "simplified": true,
+        "projectTypeKey": "software"
+      },
+      "description": {
+        "type": "doc",
+        "version": 1,
+        "content": [
+          {
+            "type": "paragraph",
+            "content": [
+              {
+                "type": "text",
+                "text": "{\"errorDetails\":{\"title\":\"Network Interface Card (NIC) Failure Detected on Host-03\",\"description\":\"Network Interface Card (NIC) Failure Detected on Host-03\"},\"investigationDetails\":\"Investigation details added manually for testing purposes and it should stay till the actual integration with the API\",\"playBook\":\"restart:true,restore:true,analyze:true,execute:true\",\"troubleshootInfo\":\"testingd etails\",\"successfulTroubleshoot\":false}"
+              }
+            ]
+          },
+          {
+            "type": "table",
+            "content": [
+              { "type": "tableRow" },
+              { "type": "tableRow" },
+              { "type": "tableRow" },
+              { "type": "tableRow" },
+              { "type": "tableRow" },
+              { "type": "tableRow" },
+              { "type": "tableRow" },
+              { "type": "tableRow" },
+              { "type": "tableRow" },
+              { "type": "tableRow" },
+              { "type": "tableRow" },
+              { "type": "tableRow" },
+              { "type": "tableRow" },
+              { "type": "tableRow" },
+              { "type": "tableRow" },
+              { "type": "tableRow" }
+            ]
+          }
+        ]
+      },
+      "fixVersions": [],
+      "attachment": [],
+      "workratio": -1,
+      "summary": "Network Interface Card (NIC) Failure Detected on Host-03",
+      "issuerestriction": {
+        "shouldDisplay": true
+      },
+      "watches": {
+        "isWatching": true,
+        "self": "https://api.atlassian.com/ex/jira/b3efd337-1a82-4f6f-b5e8-41458b3e04cc/rest/api/3/issue/SCRUM-30/watchers",
+        "watchCount": 1
+      },
+      "creator": {
+        "self": "https://api.atlassian.com/ex/jira/b3efd337-1a82-4f6f-b5e8-41458b3e04cc/rest/api/3/user?accountId=5fa510b48573800069c6f401",
+        "accountId": "5fa510b48573800069c6f401",
+        "emailAddress": "rangaswamyd25@gmail.com",
+        "avatarUrls": {
+          "16x16": "https://secure.gravatar.com/avatar/63ebe867c4e976a1d9eb5c6f5f56e1c1?d=https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RD-3.png",
+          "24x24": "https://secure.gravatar.com/avatar/63ebe867c4e976a1d9eb5c6f5f56e1c1?d=https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RD-3.png",
+          "32x32": "https://secure.gravatar.com/avatar/63ebe867c4e976a1d9eb5c6f5f56e1c1?d=https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RD-3.png",
+          "48x48": "https://secure.gravatar.com/avatar/63ebe867c4e976a1d9eb5c6f5f56e1c1?d=https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RD-3.png"
+        },
+        "displayName": "Rangaswamy D",
+        "active": true,
+        "timeZone": "Asia/Calcutta",
+        "accountType": "atlassian"
+      },
+      "subtasks": [],
+      "created": "2025-06-18T18:52:33.168+0530",
+      "reporter": {
+        "self": "https://api.atlassian.com/ex/jira/b3efd337-1a82-4f6f-b5e8-41458b3e04cc/rest/api/3/user?accountId=5fa510b48573800069c6f401",
+        "accountId": "5fa510b48573800069c6f401",
+        "emailAddress": "rangaswamyd25@gmail.com",
+        "avatarUrls": {
+          "16x16": "https://secure.gravatar.com/avatar/63ebe867c4e976a1d9eb5c6f5f56e1c1?d=https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RD-3.png",
+          "24x24": "https://secure.gravatar.com/avatar/63ebe867c4e976a1d9eb5c6f5f56e1c1?d=https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RD-3.png",
+          "32x32": "https://secure.gravatar.com/avatar/63ebe867c4e976a1d9eb5c6f5f56e1c1?d=https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RD-3.png",
+          "48x48": "https://secure.gravatar.com/avatar/63ebe867c4e976a1d9eb5c6f5f56e1c1?d=https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RD-3.png"
+        },
+        "displayName": "Rangaswamy D",
+        "active": true,
+        "timeZone": "Asia/Calcutta",
+        "accountType": "atlassian"
+      },
+      "aggregateprogress": {
+        "progress": 0,
+        "total": 0
+      },
+      "priority": {
+        "self": "https://api.atlassian.com/ex/jira/b3efd337-1a82-4f6f-b5e8-41458b3e04cc/rest/api/3/priority/3",
+        "iconUrl": "https://rangaswamyd25.atlassian.net/images/icons/priorities/medium_new.svg",
+        "name": "Medium",
+        "id": "3"
+      },
+      "labels": [],
+      "customfield_10019": "0|i0003j:",
+      "versions": [],
+      "progress": {
+        "progress": 0,
+        "total": 0
+      },
+      "issuelinks": [],
+      "votes": {
+        "self": "https://api.atlassian.com/ex/jira/b3efd337-1a82-4f6f-b5e8-41458b3e04cc/rest/api/3/issue/SCRUM-30/votes",
+        "votes": 0,
+        "hasVoted": false
+      },
+      "comment": {
+        "comments": [],
+        "maxResults": 0,
+        "startAt": 0,
+        "total": 0
+      },
+      "statusCategory": {
+        "self": "https://api.atlassian.com/ex/jira/b3efd337-1a82-4f6f-b5e8-41458b3e04cc/rest/api/3/statuscategory/2",
+        "id": 2,
+        "key": "new",
+        "colorName": "blue-gray",
+        "name": "To Do"
+      }
+    }
+  }
+  
