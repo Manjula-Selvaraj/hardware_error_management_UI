@@ -36,6 +36,7 @@ const InboxPage = () => {
 
   const handleTaskSelect = async (task) => {
     setSelectedTask(null); // Reset first to force re-render
+    const tasksTemp = tasks.find((t) => t.id === task.id);
 
     try {
       await keycloak.updateToken(60);
@@ -56,7 +57,7 @@ const InboxPage = () => {
 
       const variables = await response.json();
       setSelectedTask({
-        ...task,
+        ...tasksTemp,
         variables, // inject variables into the task object
       });
     } catch (error) {
@@ -64,32 +65,37 @@ const InboxPage = () => {
     }
   };
 
+  const fetchTasks = async () => {
+    try {
+      await keycloak.updateToken(60);
+      const token = keycloak.token;
+      const response = await fetch(`${base_url}/search`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          state: "CREATED",
+          assignee: keycloak.tokenParsed.preferred_username,
+          candidateGroups: keycloak.tokenParsed.groups,
+        }),
+      });
+
+      const data = await response.json();
+
+      setTasks([]);
+      setTimeout(() => {
+        setTasks(Array.isArray(data) ? [...data] : []);
+      }, 500);
+    } catch (error) {
+      console.error("Failed to fetch tasks:", error);
+    }
+  };
+
+  console.log("tasks", tasks);
+
   useEffect(() => {
-    const fetchTasks = async () => {
-      try {
-        await keycloak.updateToken(60);
-        const token = keycloak.token;
-        const response = await fetch(`${base_url}/search`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            state: "CREATED",
-            assignee: keycloak.tokenParsed.preferred_username,
-            candidateGroups: keycloak.tokenParsed.groups,
-          }),
-        });
-
-        const data = await response.json();
-
-        setTasks(data);
-      } catch (error) {
-        console.error("Failed to fetch tasks:", error);
-      }
-    };
-
     if (keycloak.authenticated) {
       fetchTasks();
     }
@@ -158,6 +164,9 @@ const InboxPage = () => {
       icon: "success",
       confirmButtonText: "OK",
     }).then((result) => {});
+    setTimeout(() => {
+      fetchTasks();
+    }, 3000);
   };
 
   const handleClaimTask = async (taskId) => {
@@ -183,6 +192,9 @@ const InboxPage = () => {
       icon: "success",
       confirmButtonText: "OK",
     }).then((result) => {});
+    setTimeout(() => {
+      fetchTasks();
+    }, 3000);
   };
 
   const columns = [
@@ -281,8 +293,8 @@ const InboxPage = () => {
                 display: "flex",
                 flexDirection: "column",
                 zIndex: 1000,
-                right: "65px",
-                top: "45px",
+                // right: "65px",
+                top: "70px",
                 width: "120px",
               }}
             >
@@ -290,13 +302,18 @@ const InboxPage = () => {
                 style={{
                   // display: 'block',
                   width: "100%",
-                  padding: "1px 16px",
+                  padding: "1px 12px",
                   border: "none",
                   background: "none",
                   cursor: "pointer",
                   borderBottom: "1px solid #ddd",
                 }}
-                onClick={() => handleTaskSelect(params.row)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleTaskSelect(params.row);
+                  setIdForPopup(null); // Close the popup after selecting the task
+                }}
               >
                 <FaRegEye /> View
               </button>
@@ -309,13 +326,17 @@ const InboxPage = () => {
                   background: "none",
                   cursor: "pointer",
                 }}
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   if (
                     params?.row?.assignee ===
                     keycloak?.tokenParsed?.preferred_username
                   )
                     handleUnClaimTask(params.row.id);
                   else handleClaimTask(params.row.id);
+
+                  setIdForPopup(null); // Close the popup after selecting the task
                 }}
               >
                 <IoMdCheckmarkCircleOutline />{" "}
@@ -523,7 +544,7 @@ const InboxPage = () => {
               </button>
             </div>
           </div>
-          <Box sx={{ height: 800, width: "100%" }}>
+          <Box sx={{ height: "350px", width: "100%" }}>
             <div
               style={{
                 display: "flex",
@@ -554,9 +575,9 @@ const InboxPage = () => {
               hideFooterPagination
               pageSize={6}
               rowsPerPageOptions={[6]}
-              onRowClick={(params) =>
-                handleTaskSelect(tasks.find((t) => t.id === params.id))
-              }
+              // onRowClick={(params) =>
+              //   handleTaskSelect(tasks.find((t) => t.id === params.id))
+              // }
               getRowClassName={(params) =>
                 selectedTask?.id === params.id
                   ? "Mui-selected"
@@ -598,7 +619,7 @@ const InboxPage = () => {
               }}
             />
           </Box>
-          <Box sx={{ marginTop: "80px" }}>
+          <Box sx={{ marginTop: "80px", height: "300px", width: "100%" }}>
             <div
               style={{
                 display: "flex",
@@ -624,9 +645,9 @@ const InboxPage = () => {
               columns={columns}
               pageSize={6}
               rowsPerPageOptions={[6]}
-              onRowClick={(params) =>
-                handleTaskSelect(tasks.find((t) => t.id === params.id))
-              }
+              // onRowClick={(params) =>
+              //   handleTaskSelect(tasks.find((t) => t.id === params.id))
+              // }
               hideFooterPagination
               getRowClassName={(params) =>
                 selectedTask?.id === params.id
@@ -680,7 +701,10 @@ const InboxPage = () => {
               onClaimChange={handleClaimChange}
               onAddJiraComment={onAddJiraComment}
               onAddComment={onAddComment}
-              handleEnableSUbmitButton={(
+              handleCloseTask={() => {
+                setSelectedTask(null);
+              }}
+              handleEnableSubmitButton={(
                 checkboxData,
                 troubleshootText,
                 isTroubleshootSuccessful
@@ -750,8 +774,6 @@ const InboxPage = () => {
                 },
               };
             }
-
-            console.log("Payload", payload);
 
             // const Payload = {
             //   action: "complete",

@@ -36,8 +36,6 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
     ) || {}
   );
 
-  console.log("comments", comments);
-
   // Add new state for watches
   const [isWatching, setIsWatching] = useState(false);
   const [watchCount, setWatchCount] = useState(0);

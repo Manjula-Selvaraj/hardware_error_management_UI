@@ -11,9 +11,8 @@ const SRE_Details = ({
   activeTab: selectedTab,
   formData,
   isClaimed,
-  handleEnableSUbmitButton,
+  handleEnableSubmitButton,
 }) => {
-  console.log("initialSelectedTask", initialSelectedTask?.variables);
   const [selectedProject, setSelectedProject] = useState({});
   const [data, setData] = useState(jsonData);
   const [suggestions, setSuggestions] = useState([]);
@@ -37,9 +36,6 @@ const SRE_Details = ({
       (data) => data.name === "relatedJiraTickets"
     ) || {}
   );
-
-  console.log("incidentData", incidentData);
-  console.log("bareData", bareData);
 
   const tabs = ["All", "Suggestions"];
   useEffect(() => {
@@ -73,7 +69,7 @@ const SRE_Details = ({
       troubleshootText !== "" ||
       isTroubleshootSuccessful
     ) {
-      handleEnableSUbmitButton(
+      handleEnableSubmitButton(
         checkboxStates,
         troubleshootText,
         isTroubleshootSuccessful

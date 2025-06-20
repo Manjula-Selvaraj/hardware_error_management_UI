@@ -20,8 +20,9 @@ const TaskDetails = ({
   onClaimChange,
   onAddJiraComment,
   onAddComment,
-  handleEnableSUbmitButton,
+  handleEnableSubmitButton,
   handleTamPayload,
+  handleCloseTask,
 }) => {
   const { keycloak } = useContext(AuthContext);
 
@@ -201,7 +202,7 @@ const TaskDetails = ({
         activeTab="SRE"
         formData={formResponses["SRE"]}
         isClaimed={isClaimed}
-        handleEnableSUbmitButton={handleEnableSUbmitButton}
+        handleEnableSubmitButton={handleEnableSubmitButton}
       />
     ),
     TAM: () => (
@@ -261,7 +262,7 @@ const TaskDetails = ({
         <Col md={2} className="text-end">
           <button
             className="btn"
-            onClick={() => window.history.back()}
+            onClick={handleCloseTask}
             style={{
               backgroundColor: "transparent",
               border: "none",

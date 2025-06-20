@@ -80,7 +80,6 @@ const TAM_Details = ({
         email: keycloak?.tokenParsed?.email || "defaultEmail",
       },
     };
-    console.log("Form submitted with data:", payload);
   };
 
   return (
