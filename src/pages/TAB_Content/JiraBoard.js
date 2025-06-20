@@ -74,6 +74,33 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
     }
   }, [initialSelectedTask]);
 
+  const fetchComments = async () => {
+    try {
+      await keycloak.updateToken(60);
+      const token = keycloak.token;
+      const response = await fetch(
+        `http://localhost:7259/api/incident/v1/jira/comment/issueIdOrKey/${jiraIssueInfo?.key}?email=${keycloak?.tokenParsed?.email}`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const data = await response.json();
+      setComments(data?.comments || []);
+    } catch (error) {
+      console.error("Failed to fetch tasks:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!jiraIssueInfo?.key) return;
+    fetchComments();
+  }, [jiraIssueInfo?.key, keycloak]);
+
   useEffect(() => {
     try {
       if (!Array.isArray(data)) throw new Error("Data is not an array");
@@ -152,7 +179,7 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
   };
 
   const handleSaveComment = async (comment) => {
-    const newComments = [comment, ...comments];
+    const newComments = [comment];
     setComments(newComments);
     setComment("");
     updateData(newComments);
@@ -191,6 +218,7 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
       );
 
       const data = await response.json();
+      fetchComments();
     } catch (error) {
       console.error("Failed to fetch tasks:", error);
     }
@@ -334,39 +362,42 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
               </div>
             </div>
             <div class="comment_list" style={{ marginTop: "40px" }}>
-              {comments?.map((item, index) => {
-                const date = new Date();
-                date.setMinutes(date.getMinutes() + index);
-                return (
-                  <div class="comment_item" key={index}>
-                    <img
-                      src={
-                        "https://secure.gravatar.com/avatar/63ebe867c4e976a1d9eb5c6f5f56e1c1?d=https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RD-3.png"
-                      }
-                      alt="Reporter Avatar"
-                      style={{
-                        width: "16px",
-                        height: "16px",
-                        marginRight: "4px",
-                      }}
-                    />
-                    <div class="comment_content">
-                      <h4 class="commentor">
-                        {jiraIssueInfo?.fields?.creator.displayName}
-                      </h4>
-                      <p class="date">{date.toLocaleString()}</p>
-                      <p class="comment_text">{item}</p>
-                      <div class="comment_actions">
-                        <button class="action_item">↪</button>
-                        <button class="action_item">👍</button>
-                        <button class="action_item">🙂</button>
-                        <button class="action_item">📝</button>
-                        <button class="more">...</button>
+              {comments
+                ?.sort((a, b) => new Date(a.created) - new Date(b.created))
+                ?.reverse()
+                .map((item, index) => {
+                  return (
+                    <div class="comment_item" key={index}>
+                      <img
+                        src={
+                          "https://secure.gravatar.com/avatar/63ebe867c4e976a1d9eb5c6f5f56e1c1?d=https://avatar-management--avatars.us-west-2.prod.public.atl-paas.net/initials/RD-3.png"
+                        }
+                        alt="Reporter Avatar"
+                        style={{
+                          width: "16px",
+                          height: "16px",
+                          marginRight: "4px",
+                        }}
+                      />
+                      <div class="comment_content">
+                        <h4 class="commentor">{item?.author?.displayName}</h4>
+                        <p class="date">
+                          {new Date(item?.created).toLocaleString()}
+                        </p>
+                        <p class="comment_text">
+                          {item?.body?.content[0]?.content[0]?.text}
+                        </p>
+                        <div class="comment_actions">
+                          <button class="action_item">↪</button>
+                          <button class="action_item">👍</button>
+                          <button class="action_item">🙂</button>
+                          <button class="action_item">📝</button>
+                          <button class="more">...</button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
           </div>
         </div>
@@ -451,15 +482,6 @@ const JiraBoard = ({ selectedTask: initialSelectedTask, onCommentsUpdate }) => {
                 </div>
 
                 {/* Comments List */}
-                <div className="mt-3">
-                  {comments.map((comment, index) => (
-                    <div key={index} className="card mb-2 position-relative">
-                      <div className="card-body">
-                        <p>{comment}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
               </div>
             )}
 
