@@ -15,7 +15,7 @@ const AppRoutes = () => {
       <Route path="/header" element={<Header />} />
       <Route path="/groupCheck" element={<GroupCheckRoute />} />
       <Route
-        path="/adminView"
+        path="/supervisorView"
         element={
           <ProtectedRoute allowedRoles={["Tasklist"]}>
             <AdminPage />

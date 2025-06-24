@@ -24,7 +24,8 @@ const KeycloakLoginPage = () => {
         email: tokenParsed?.email,
       });
 
-      if (tokenParsed?.groups.includes("supervisor")) navigate("/adminView");
+      if (tokenParsed?.groups.includes("supervisor"))
+        navigate("/supervisorView");
       else if (roles.includes("Tasklist")) {
         navigate("/tasklist");
       } else {
