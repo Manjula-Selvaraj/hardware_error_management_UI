@@ -118,7 +118,19 @@ const AdminPage = () => {
     {
       field: "durationInSeconds",
       headerName: "Duration",
-      width: 120,
+      width: 160,
+      valueGetter: (value, row) => {
+        if (!row.durationInSeconds && row.durationInSeconds !== 0) return "";
+        const totalSeconds = row.durationInSeconds;
+        const hours = Math.floor(totalSeconds / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        let result = "";
+        if (hours > 0) result += `${hours}h `;
+        if (minutes > 0 || hours > 0) result += `${minutes}m `;
+        result += `${seconds}s`;
+        return result.trim();
+      },
     },
     // {
     //   field: "action",
