@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../AuthProvider";
+import { FaConnectdevelop } from "react-icons/fa";
 
 const KeycloakLoginPage = () => {
   const { keycloak, setIsAuthenticated } = useContext(AuthContext);
@@ -23,9 +24,11 @@ const KeycloakLoginPage = () => {
         email: tokenParsed?.email,
       });
 
-      if (roles.includes("Tasklist")) {
+      if (tokenParsed?.groups.includes("supervisor")) navigate("/adminView");
+      else if (roles.includes("Tasklist")) {
         navigate("/tasklist");
       } else {
+        console.log("\n\n\n 33");
         navigate("/unauthorized");
       }
     }

@@ -21,16 +21,13 @@ const AdminPage = () => {
         await keycloak.updateToken(60);
         const token = keycloak.token;
         const response = await fetch(
-          `${process.env.REACT_APP_BASE_URL}/search`,
+          `http://localhost:7259/api/task-data-audit/v1/data`,
           {
-            method: "POST",
+            method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              state: "CREATED",
-            }),
           }
         );
 
@@ -59,38 +56,38 @@ const AdminPage = () => {
     },
     { field: "id", headerName: "ID", width: 150 },
     { field: "name", headerName: "Task Name", width: 280 },
-    {
-      field: "processName",
-      headerName: "Process Name",
-      width: 280,
-      renderCell: (params) => (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          <div
-            style={{
-              display: "inline-block",
-              background: "#e0e7ff",
-              color: "#3730a3",
-              borderRadius: "5px",
-              padding: "0px 10px",
-              fontSize: "0.95em",
-              fontWeight: 500,
-              height: "30px",
-              lineHeight: "30px",
-            }}
-          >
-            {params.row.processName}
-          </div>
-        </div>
-      ),
-    },
+    // {
+    //   field: "processName",
+    //   headerName: "Process Name",
+    //   width: 280,
+    //   renderCell: (params) => (
+    //     <div
+    //       style={{
+    //         display: "flex",
+    //         justifyContent: "center",
+    //         alignItems: "center",
+    //         width: "100%",
+    //         height: "100%",
+    //       }}
+    //     >
+    //       <div
+    //         style={{
+    //           display: "inline-block",
+    //           background: "#e0e7ff",
+    //           color: "#3730a3",
+    //           borderRadius: "5px",
+    //           padding: "0px 10px",
+    //           fontSize: "0.95em",
+    //           fontWeight: 500,
+    //           height: "30px",
+    //           lineHeight: "30px",
+    //         }}
+    //       >
+    //         {params.row.processName}
+    //       </div>
+    //     </div>
+    //   ),
+    // },
     {
       field: "creationDate",
       headerName: "Created At",
@@ -98,89 +95,103 @@ const AdminPage = () => {
       valueGetter: (value, row) =>
         row.creationDate ? new Date(row.creationDate).toLocaleString() : "",
     },
+    {
+      field: "claimedDate",
+      headerName: "Claimed At",
+      width: 180,
+      valueGetter: (value, row) =>
+        row.claimedDate ? new Date(row.claimedDate).toLocaleString() : "",
+    },
+    {
+      field: "completedDate",
+      headerName: "Completed At",
+      width: 180,
+      valueGetter: (value, row) =>
+        row.completedDate ? new Date(row.completedDate).toLocaleString() : "",
+    },
     { field: "assignee", headerName: "Assignee", width: 150 },
     {
-      field: "priority",
-      headerName: "Priority",
+      field: "taskState",
+      headerName: "Task State",
       width: 120,
     },
-    {
-      field: "action",
-      headerName: "Actions",
-      width: 80,
-      sortable: false,
-      filterable: false,
-      renderCell: (params) => (
-        <div>
-          <button
-            style={{
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              padding: "5px",
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-              setIdForPopup(idForPopup === params.id ? null : params.id);
-            }}
-          >
-            <CiMenuKebab />
-          </button>
-          {idForPopup === params.id && (
-            <div
-              style={{
-                position: "absolute",
-                background: "white",
-                boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-                borderRadius: "4px",
-                display: "flex",
-                flexDirection: "column",
-                zIndex: 1000,
-                right: "65px",
-                top: "45px",
-                width: "120px",
-              }}
-            >
-              <button
-                style={{
-                  width: "100%",
-                  padding: "8px 16px",
-                  border: "none",
-                  background: "none",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-                onClick={() => {
-                  // Implement view action
-                  setSelectedTask(params.row);
-                }}
-              >
-                <FaRegEye /> View
-              </button>
-              <button
-                style={{
-                  width: "100%",
-                  padding: "8px 16px",
-                  border: "none",
-                  background: "none",
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                }}
-                onClick={() => {
-                  // Implement manage action
-                }}
-              >
-                <IoMdCheckmarkCircleOutline /> Manage
-              </button>
-            </div>
-          )}
-        </div>
-      ),
-    },
+    // {
+    //   field: "action",
+    //   headerName: "Actions",
+    //   width: 80,
+    //   sortable: false,
+    //   filterable: false,
+    //   renderCell: (params) => (
+    //     <div>
+    //       <button
+    //         style={{
+    //           background: "transparent",
+    //           border: "none",
+    //           cursor: "pointer",
+    //           padding: "5px",
+    //         }}
+    //         onClick={(e) => {
+    //           e.stopPropagation();
+    //           setIdForPopup(idForPopup === params.id ? null : params.id);
+    //         }}
+    //       >
+    //         <CiMenuKebab />
+    //       </button>
+    //       {idForPopup === params.id && (
+    //         <div
+    //           style={{
+    //             position: "absolute",
+    //             background: "white",
+    //             boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+    //             borderRadius: "4px",
+    //             display: "flex",
+    //             flexDirection: "column",
+    //             zIndex: 1000,
+    //             right: "65px",
+    //             top: "45px",
+    //             width: "120px",
+    //           }}
+    //         >
+    //           <button
+    //             style={{
+    //               width: "100%",
+    //               padding: "8px 16px",
+    //               border: "none",
+    //               background: "none",
+    //               cursor: "pointer",
+    //               display: "flex",
+    //               alignItems: "center",
+    //               gap: "8px",
+    //             }}
+    //             onClick={() => {
+    //               // Implement view action
+    //               setSelectedTask(params.row);
+    //             }}
+    //           >
+    //             <FaRegEye /> View
+    //           </button>
+    //           <button
+    //             style={{
+    //               width: "100%",
+    //               padding: "8px 16px",
+    //               border: "none",
+    //               background: "none",
+    //               cursor: "pointer",
+    //               display: "flex",
+    //               alignItems: "center",
+    //               gap: "8px",
+    //             }}
+    //             onClick={() => {
+    //               // Implement manage action
+    //             }}
+    //           >
+    //             <IoMdCheckmarkCircleOutline /> Manage
+    //           </button>
+    //         </div>
+    //       )}
+    //     </div>
+    //   ),
+    // },
   ];
 
   return (
@@ -274,12 +285,13 @@ const AdminPage = () => {
           </div>
           <DataGrid
             rows={tasks.map((task) => ({
-              id: task.id,
+              id: task.taskId,
               name: task?.name,
-              assignee: task.assignee,
-              creationDate: task?.creationDate,
-              processName: task.processName,
-              priority: task.priority,
+              assignee: task.assignedTo,
+              creationDate: task?.createdAt,
+              claimedDate: task?.claimedAt,
+              completedDate: task.completedAt,
+              taskState: task.taskState,
             }))}
             columns={columns}
             hideFooterPagination
