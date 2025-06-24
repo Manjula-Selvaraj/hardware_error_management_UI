@@ -21,7 +21,7 @@ const AdminPage = () => {
         await keycloak.updateToken(60);
         const token = keycloak.token;
         const response = await fetch(
-          `http://localhost:7259/api/task-data-audit/v1/data`,
+          `http://localhost:7259/api/incident/v1/task/audit`,
           {
             method: "GET",
             headers: {
@@ -225,7 +225,7 @@ const AdminPage = () => {
               marginBottom: "16px",
             }}
           >
-            Error Management - Admin
+            Error Management - Supervisor
           </div>
           <div
             style={{
