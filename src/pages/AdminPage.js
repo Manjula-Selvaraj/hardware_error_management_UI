@@ -115,6 +115,11 @@ const AdminPage = () => {
       headerName: "Task State",
       width: 120,
     },
+    {
+      field: "durationInSeconds",
+      headerName: "Duration",
+      width: 120,
+    },
     // {
     //   field: "action",
     //   headerName: "Actions",
@@ -292,6 +297,7 @@ const AdminPage = () => {
               claimedDate: task?.claimedAt,
               completedDate: task.completedAt,
               taskState: task.taskState,
+              durationInSeconds: task?.durationInSeconds,
             }))}
             columns={columns}
             hideFooterPagination
