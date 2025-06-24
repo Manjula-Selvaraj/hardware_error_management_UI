@@ -64,8 +64,11 @@ const SRE_Details = ({
   const isFormSubmitted = !!formData;
 
   useEffect(() => {
-    if (
-      Object.keys(checkboxStates).length > 0 ||
+    if (Object.keys(checkboxStates).length < 0) {
+      return;
+    } else if (
+      (Object.keys(checkboxStates).length > 0 &&
+        JSON.parse(incidentData?.previewValue)?.playBook !== checkboxStates) ||
       troubleshootText !== "" ||
       isTroubleshootSuccessful
     ) {

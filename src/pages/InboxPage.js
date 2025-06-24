@@ -166,7 +166,7 @@ const InboxPage = () => {
     }).then((result) => {});
     setTimeout(() => {
       fetchTasks();
-    }, 3000);
+    }, 5000);
   };
 
   const handleClaimTask = async (taskId) => {
@@ -194,7 +194,7 @@ const InboxPage = () => {
     }).then((result) => {});
     setTimeout(() => {
       fetchTasks();
-    }, 3000);
+    }, 5000);
   };
 
   const columns = [
@@ -262,91 +262,68 @@ const InboxPage = () => {
     },
     {
       field: "action",
-      headerName: "View",
-      width: 80,
+      headerName: "Action",
+      width: 180,
       sortable: false,
       filterable: false,
       renderCell: (params) => (
         <div>
-          <button
+          <div
             style={{
-              background: "transparent",
-              border: "none",
-              cursor: "pointer",
-              padding: "5px",
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-              //params.api.setRowId(params.id);
-              setIdForPopup(idForPopup === params.id ? null : params.id);
+              display: "flex",
+              justifyContent: "center",
+              width: "170px",
             }}
           >
-            <CiMenuKebab />
-          </button>
-          {idForPopup === params.id && (
-            <div
+            <button
               style={{
-                position: "absolute",
+                // display: 'block',
+                width: "100%",
+                padding: "1px 12px",
+
                 background: "white",
-                boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
-                borderRadius: "4px",
-                display: "flex",
-                flexDirection: "column",
-                zIndex: 1000,
-                // right: "65px",
-                top: "70px",
-                width: "120px",
+                cursor: "pointer",
+                border: "1px solid #ddd",
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                handleTaskSelect(params.row);
+                setIdForPopup(null); // Close the popup after selecting the task
               }}
             >
-              <button
-                style={{
-                  // display: 'block',
-                  width: "100%",
-                  padding: "1px 12px",
-                  border: "none",
-                  background: "none",
-                  cursor: "pointer",
-                  borderBottom: "1px solid #ddd",
-                }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  handleTaskSelect(params.row);
-                  setIdForPopup(null); // Close the popup after selecting the task
-                }}
-              >
-                <FaRegEye /> View
-              </button>
-              <button
-                style={{
-                  // display: 'block',
-                  width: "100%",
-                  padding: "1px 16px",
-                  border: "none",
-                  background: "none",
-                  cursor: "pointer",
-                }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  if (
-                    params?.row?.assignee ===
-                    keycloak?.tokenParsed?.preferred_username
-                  )
-                    handleUnClaimTask(params.row.id);
-                  else handleClaimTask(params.row.id);
+              <FaRegEye /> View
+            </button>
+            <button
+              style={{
+                // display: 'block',
+                width: "100%",
+                padding: "1px 12px",
 
-                  setIdForPopup(null); // Close the popup after selecting the task
-                }}
-              >
-                <IoMdCheckmarkCircleOutline />{" "}
-                {params?.row?.assignee ===
-                keycloak?.tokenParsed?.preferred_username
-                  ? "Unclaim"
-                  : "Claim"}
-              </button>
-            </div>
-          )}
+                background: "white",
+                cursor: "pointer",
+                border: "1px solid #ddd",
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                if (
+                  params?.row?.assignee ===
+                  keycloak?.tokenParsed?.preferred_username
+                )
+                  handleUnClaimTask(params.row.id);
+                else handleClaimTask(params.row.id);
+
+                setIdForPopup(null); // Close the popup after selecting the task
+              }}
+            >
+              <IoMdCheckmarkCircleOutline />{" "}
+              {params?.row?.assignee ===
+              keycloak?.tokenParsed?.preferred_username
+                ? "Unclaim"
+                : "Claim"}
+            </button>
+          </div>
         </div>
       ),
     },
@@ -575,9 +552,9 @@ const InboxPage = () => {
               hideFooterPagination
               pageSize={6}
               rowsPerPageOptions={[6]}
-              // onRowClick={(params) =>
-              //   handleTaskSelect(tasks.find((t) => t.id === params.id))
-              // }
+              onRowClick={(params) =>
+                handleTaskSelect(tasks.find((t) => t.id === params.id))
+              }
               getRowClassName={(params) =>
                 selectedTask?.id === params.id
                   ? "Mui-selected"
@@ -586,6 +563,10 @@ const InboxPage = () => {
                   : "odd-row"
               }
               sx={{
+                "& .MuiDataGrid-columnHeader": {
+                  backgroundColor: "#8529cd",
+                  color: "white",
+                },
                 cursor: "pointer",
                 "& .Mui-selected": {
                   backgroundColor: "#eceef0 !important",
@@ -645,9 +626,9 @@ const InboxPage = () => {
               columns={columns}
               pageSize={6}
               rowsPerPageOptions={[6]}
-              // onRowClick={(params) =>
-              //   handleTaskSelect(tasks.find((t) => t.id === params.id))
-              // }
+              onRowClick={(params) =>
+                handleTaskSelect(tasks.find((t) => t.id === params.id))
+              }
               hideFooterPagination
               getRowClassName={(params) =>
                 selectedTask?.id === params.id
@@ -657,6 +638,10 @@ const InboxPage = () => {
                   : "odd-row"
               }
               sx={{
+                "& .MuiDataGrid-columnHeader": {
+                  backgroundColor: "#8529cd",
+                  color: "white",
+                },
                 cursor: "pointer",
                 "& .Mui-selected": {
                   backgroundColor: "#eceef0 !important",
@@ -702,6 +687,7 @@ const InboxPage = () => {
               onAddJiraComment={onAddJiraComment}
               onAddComment={onAddComment}
               handleCloseTask={() => {
+                setIsCompleteButtonEnabled(false);
                 setSelectedTask(null);
               }}
               handleEnableSubmitButton={(
