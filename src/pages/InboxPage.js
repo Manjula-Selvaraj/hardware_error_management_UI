@@ -201,7 +201,7 @@ const InboxPage = () => {
     {
       field: "serialNo",
       headerName: "Serial No",
-      width: 100,
+      flex: 1,
       valueGetter: (value, row) => {
         if (!row || !row.id) return "";
         // Find the index of the row in the tasks array and add 1 for serial number
@@ -209,12 +209,12 @@ const InboxPage = () => {
         return index >= 0 ? index + 1 : "";
       },
     },
-    { field: "id", headerName: "ID", width: 150 },
-    { field: "name", headerName: "Task Name", width: 280 },
+    { field: "id", headerName: "ID", flex: 1 },
+    { field: "name", headerName: "Task Name", flex: 1 },
     {
       field: "processName",
       headerName: "Process Name",
-      width: 280,
+      flex: 1,
       renderCell: (params) => {
         return (
           <div
@@ -248,22 +248,22 @@ const InboxPage = () => {
     {
       field: "creationDate",
       headerName: "Created At",
-      width: 180,
+      flex: 1,
       valueGetter: (value, row) =>
         row.creationDate
           ? new Date(row.creationDate || "").toLocaleString()
           : "",
     },
-    { field: "assigne", headerName: "Assignee", width: 150 },
+    { field: "assigne", headerName: "Assignee", flex: 1 },
     {
       field: "priority",
       headerName: "Priority",
-      width: 120,
+      flex: 1,
     },
     {
       field: "action",
       headerName: "Action",
-      width: 180,
+      flex: 1,
       sortable: false,
       filterable: false,
       renderCell: (params) => (
@@ -564,7 +564,7 @@ const InboxPage = () => {
               }
               sx={{
                 "& .MuiDataGrid-columnHeader": {
-                  backgroundColor: "#8529cd",
+                  backgroundColor: "#3730a3",
                   color: "white",
                 },
                 cursor: "pointer",
@@ -639,7 +639,7 @@ const InboxPage = () => {
               }
               sx={{
                 "& .MuiDataGrid-columnHeader": {
-                  backgroundColor: "#8529cd",
+                  backgroundColor: "#3730a3",
                   color: "white",
                 },
                 cursor: "pointer",

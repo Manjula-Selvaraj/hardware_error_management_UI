@@ -47,15 +47,15 @@ const AdminPage = () => {
     {
       field: "serialNo",
       headerName: "Serial No",
-      width: 100,
+      flex: 1,
       valueGetter: (value, row) => {
         if (!row || !row.id) return "";
         const index = tasks.findIndex((t) => t.id === row.id);
         return index >= 0 ? index + 1 : "";
       },
     },
-    { field: "id", headerName: "ID", width: 150 },
-    { field: "name", headerName: "Task Name", width: 280 },
+    { field: "id", headerName: "ID", flex: 1 },
+    { field: "name", headerName: "Task Name", flex: 1 },
     // {
     //   field: "processName",
     //   headerName: "Process Name",
@@ -91,34 +91,34 @@ const AdminPage = () => {
     {
       field: "creationDate",
       headerName: "Created At",
-      width: 180,
+      flex: 1,
       valueGetter: (value, row) =>
         row.creationDate ? new Date(row.creationDate).toLocaleString() : "",
     },
     {
       field: "claimedDate",
       headerName: "Claimed At",
-      width: 180,
+      flex: 1,
       valueGetter: (value, row) =>
         row.claimedDate ? new Date(row.claimedDate).toLocaleString() : "",
     },
     {
       field: "completedDate",
       headerName: "Completed At",
-      width: 180,
+      flex: 1,
       valueGetter: (value, row) =>
         row.completedDate ? new Date(row.completedDate).toLocaleString() : "",
     },
-    { field: "assignee", headerName: "Assignee", width: 150 },
+    { field: "assignee", headerName: "Assignee", flex: 1 },
     {
       field: "taskState",
       headerName: "Task State",
-      width: 120,
+      flex: 1,
     },
     {
       field: "durationInSeconds",
       headerName: "Duration",
-      width: 160,
+      flex: 1,
       valueGetter: (value, row) => {
         if (!row.durationInSeconds && row.durationInSeconds !== 0) return "";
         const totalSeconds = row.durationInSeconds;
@@ -321,6 +321,10 @@ const AdminPage = () => {
                 : "odd-row"
             }
             sx={{
+              "& .MuiDataGrid-columnHeader": {
+                backgroundColor: "#3730a3",
+                color: "white",
+              },
               cursor: "pointer",
               "& .Mui-selected": {
                 backgroundColor: "#eceef0 !important",
