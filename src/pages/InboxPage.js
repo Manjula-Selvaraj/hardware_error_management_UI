@@ -564,8 +564,8 @@ const InboxPage = () => {
               }
               sx={{
                 "& .MuiDataGrid-columnHeader": {
-                  backgroundColor: "#3730a3",
-                  color: "white",
+                  backgroundColor: "#CBBAF3",
+                  color: "black",
                 },
                 cursor: "pointer",
                 "& .Mui-selected": {
@@ -639,8 +639,8 @@ const InboxPage = () => {
               }
               sx={{
                 "& .MuiDataGrid-columnHeader": {
-                  backgroundColor: "#3730a3",
-                  color: "white",
+                  backgroundColor: "#CBBAF3",
+                  color: "black",
                 },
                 cursor: "pointer",
                 "& .Mui-selected": {
